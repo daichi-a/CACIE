@@ -1,0 +1,151 @@
+Population
+NumberOfIndividuals,16
+Individual
+IDNumber,0
+NumberOfNotes,6
+Event
+44,100,0,8
+42,100,8,8
+45,100,16,48
+24,60,0,64
+26,60,0,64
+28,60,0,64
+Genom
+HARMONIZE BARFIX44 RV RV TP_6.0 RV RV RV RV RV RV RV RV RV RV RV RV RV RV 2 
+\e
+Individual
+IDNumber,1
+NumberOfNotes,2
+Event
+44,70,0,64
+20,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV TP_6.0 RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,2
+NumberOfNotes,2
+Event
+38,70,0,64
+21,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV RV 9 
+\e
+Individual
+IDNumber,3
+NumberOfNotes,2
+Event
+44,70,0,64
+20,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV RV TP_6.0 RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,4
+NumberOfNotes,2
+Event
+44,70,0,64
+20,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV RV RV TP_6.0 RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,5
+NumberOfNotes,2
+Event
+44,70,0,64
+20,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV TP_6.0 RV RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,6
+NumberOfNotes,2
+Event
+44,70,0,64
+20,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV TP_6.0 RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,7
+NumberOfNotes,2
+Event
+38,70,0,64
+21,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV RV RV RV RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,8
+NumberOfNotes,2
+Event
+50,70,0,64
+19,80,0,64
+Genom
+HARMONIZE BARFIX44 IV RV TP_6.0 RV RV TP_6.0 RV RV RV RV 9 
+\e
+Individual
+IDNumber,9
+NumberOfNotes,2
+Event
+44,70,0,64
+20,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV TP_6.0 RV RV 9 
+\e
+Individual
+IDNumber,10
+NumberOfNotes,2
+Event
+38,70,0,64
+21,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,11
+NumberOfNotes,2
+Event
+44,70,0,64
+20,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV TP_6.0 RV RV RV RV RV RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,12
+NumberOfNotes,2
+Event
+38,70,0,64
+21,80,0,64
+Genom
+HARMONIZE BARFIX44 IV RV RV RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,13
+NumberOfNotes,2
+Event
+50,70,0,64
+19,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV TP_6.0 TP_6.0 RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,14
+NumberOfNotes,2
+Event
+38,70,0,64
+21,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV RV RV RV RV RV RV 9 
+\e
+Individual
+IDNumber,15
+NumberOfNotes,2
+Event
+44,70,0,64
+20,80,0,64
+Genom
+HARMONIZE BARFIX44 RV RV TP_6.0 RV RV RV RV RV RV RV RV RV 9 
+\e
+\e

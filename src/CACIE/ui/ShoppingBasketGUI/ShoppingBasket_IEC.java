@@ -1,0 +1,325 @@
+//スレッディングは無理ぽ
+package CACIE.ui.ShoppingBasketGUI;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+
+//import processing.xml.*;
+
+public class ShoppingBasket_IEC extends PApplet {
+
+	int numOfIndividual = 16;
+	int currentDraggingIndex; // -1 is there is no dragged individual;
+	IndividualIcon iconArray[];
+	// Thread threadArray[];
+	GraphicalPopulationPresenterEvaluator_ShoppingBasket gppe;
+	int lastClickedIconIndex;
+	int lastPressedMouseButton;// 0:Left, 1:Right or Center
+	protected double[] sinArray;
+	protected double[][] distancesOfIndividuals;
+	int lastApportTargetIconIndex;
+	int lastPlayedIndex;
+
+	protected float[][] iconPositions;
+
+	//SVG trashIcon;
+	PImage trashIconJPG;
+
+	float previousMousePressedX, previousMousePressedY;
+
+	public void setNumOfIndividual(int numOfIndividual) {
+		this.numOfIndividual = numOfIndividual;
+	}
+
+	public void setGraphicalPopulationPresenterEvaluator(
+			GraphicalPopulationPresenterEvaluator_ShoppingBasket gppe) {
+		this.gppe = gppe;
+	}
+
+	protected void makeSinArray() {
+		sinArray = new double[20];
+		int counter = 0;
+		while (counter < 20) {
+			sinArray[counter] = Math.sin((double) counter * 0.1 * Math.PI);
+			counter++;
+		}
+	}
+
+	public double getSinArray(int index) {
+		return sinArray[index];
+	}
+
+	public void setup() {
+		size(800, 600);
+		colorMode(HSB, 100);
+		background(100);
+		strokeWeight(1);
+		frameRate(7);
+		makeSinArray();
+		currentDraggingIndex = -1;
+		iconArray = new IndividualIcon[numOfIndividual];
+		// threadArray = new Thread[numOfIndividual];
+		int areaZero[] = areaSpace(0);
+		for (int i = 0; i < numOfIndividual; i++) {
+			iconArray[i] = new IndividualIcon(this, i, areaZero[0], areaZero[1], 0, 0, 0, 30,
+					(int)((float)100 / (float)numOfIndividual * i));
+			// threadArray[i] = new Thread(iconArray[i]);
+		}
+		lastClickedIconIndex = -1;
+		lastPressedMouseButton = -1;
+		distancesOfIndividuals = gppe.getDistances();
+		lastApportTargetIconIndex = -1;
+		lastPlayedIndex = -1;
+
+		iconPositions = new float[numOfIndividual][3];
+		updatePositions();
+
+		// trashIcon = new SVG(this, "ConfigData/trash4.svg");
+		// trashIcon.drawMode(CORNERS);
+		// trashIconJPG = loadImage("ConfigFile/user-trash.jpg");
+
+	}
+
+	protected void updatePositions() {
+		for (int i = 0; i < numOfIndividual; i++) {
+			float position[] = iconArray[i].getPosition();
+			iconPositions[i][0] = position[0];
+			iconPositions[i][1] = position[1];
+			iconPositions[i][2] = iconArray[i].getRadius();
+		}
+	}
+
+	public void draw() {
+		colorMode(HSB, 100);
+		for(int i=0;i<numOfIndividual; i++)
+			iconArray[i].setProcessedInThisStep(false);
+		// fadeToWhite();
+		drawAreaFrame();
+		// trashIcon.draw(600,400,200,200);
+		// trashIcon.draw(800,600,200,200);
+		for (int i = 0; i < numOfIndividual; i++) {
+				iconArray[i].draw();// iconArray.get(i).draw();
+		}
+		updatePositions();
+
+		// trashIcon.draw(600,400);
+		// noTint();
+		// image(trashIconJPG,600,400,200,200);
+	}
+
+	protected void fadeToWhite() {
+		rectMode(CORNER);
+		fill(100, 20);
+		rect(0, 0, width, height);
+	}
+
+	public void mousePressed() {
+		// Detect pressed icon
+		if (currentDraggingIndex != -1)
+			System.err.println("currentDraggingIndex is not -1: "
+					+ currentDraggingIndex);
+		int counter = 0;
+		while (counter < numOfIndividual) {
+			if (iconArray[counter].mousePressed()) {
+				currentDraggingIndex = counter;
+				break;
+			}
+			counter++;
+		}
+		if (currentDraggingIndex >= numOfIndividual)// No icon pressed
+			currentDraggingIndex = -1;
+
+		if (currentDraggingIndex != -1) {
+			//
+			if (mouseButton == LEFT) {
+				// Left Click add Drag Flag
+				iconArray[currentDraggingIndex].setDragFlag(true);
+			}
+		}
+		lastClickedIconIndex = currentDraggingIndex;
+		lastPressedMouseButton = mouseButton;
+		previousMousePressedX = mouseX;
+		previousMousePressedY = mouseY;
+	}
+
+	public void mouseReleased() {
+		//個体アイコンのReleased処理をした後，右クリックで引き寄せ，左クリックで再生
+		if (currentDraggingIndex != -1) {
+			iconArray[currentDraggingIndex].mouseReleased();
+			if (lastPressedMouseButton == RIGHT) {
+				//右クリックの時引き寄せ
+				if (Math.abs(previousMousePressedX - mouseX) < 2
+						&& Math.abs(previousMousePressedY - mouseY) < 2){
+					apportSimilarIndividualIcons();
+					//System.err.println("Apport Executed.");
+				}
+			} else if (lastPressedMouseButton == LEFT) {
+				//左クリックの時再生開始
+				if (Math.abs(previousMousePressedX - mouseX) < 2
+						&& Math.abs(previousMousePressedY - mouseY) < 2) {
+					gppe.stopAll();
+					gppe.playAsMIDISequence(currentDraggingIndex);
+					lastPlayedIndex = currentDraggingIndex;
+				}
+			}
+			currentDraggingIndex = -1;
+		}
+	}
+
+	protected int mouseAreaDetection() {
+		int currentAreaID = -1;
+		if (mouseY < 300)
+			currentAreaID = 0;
+		else if (mouseY < 450)
+			if(mouseX < 600)
+				currentAreaID = 3;
+			else
+				currentAreaID = 4; 
+		else if (mouseX < 300)
+			currentAreaID = 1;
+		else if (mouseX < 600)
+			currentAreaID = 2;
+		else
+			currentAreaID = 4;
+
+		return currentAreaID;
+	}
+
+	protected int[] areaSpace(int currentAreaID) {
+		// return int array[] = {width, height, offsetX, offsetY}
+		int currentAreaSpace[] = new int[4];
+		if (currentAreaID == 0) {
+			currentAreaSpace[0] = 800;
+			currentAreaSpace[1] = 300;
+			currentAreaSpace[2] = 0;
+			currentAreaSpace[3] = 0;
+		} else if (currentAreaID == 1) {
+			currentAreaSpace[0] = 300;
+			currentAreaSpace[1] = 150;
+			currentAreaSpace[2] = 0;
+			currentAreaSpace[3] = 450;
+		} else if (currentAreaID == 2) {
+			currentAreaSpace[0] = 300;
+			currentAreaSpace[1] = 150;
+			currentAreaSpace[2] = 300;
+			currentAreaSpace[3] = 450;
+		} else if (currentAreaID == 3) {
+			currentAreaSpace[0] = 600;
+			currentAreaSpace[1] = 150;
+			currentAreaSpace[2] = 0;
+			currentAreaSpace[3] = 300;
+		} else if (currentAreaID == 4) {
+			currentAreaSpace[0] = 200;
+			currentAreaSpace[1] = 300;
+			currentAreaSpace[2] = 600;
+			currentAreaSpace[3] = 300;
+		}
+		return currentAreaSpace;
+	}
+
+	protected void drawAreaFrame() {
+		rectMode(CORNER);
+		noStroke();
+
+		// Area 0: Initial Area
+		int areaSpaceInfo[] = areaSpace(0);
+		fill(0, 0, 0, 20);
+		rect(areaSpaceInfo[2], areaSpaceInfo[3], areaSpaceInfo[0], areaSpaceInfo[1]);
+
+		// Area 1: Best Individuals Area
+		areaSpaceInfo = areaSpace(1);
+		fill(0, 70, 50, 20);
+		rect(areaSpaceInfo[2], areaSpaceInfo[3], areaSpaceInfo[0], areaSpaceInfo[1]);
+
+		// Area 2: Good Individuals Area
+		areaSpaceInfo = areaSpace(2);
+		fill(30, 70, 50, 20);
+		rect(areaSpaceInfo[2], areaSpaceInfo[3], areaSpaceInfo[0], areaSpaceInfo[1]);
+
+
+		// Area 3: Comparison Area
+		areaSpaceInfo = areaSpace(3);
+		fill(60, 70, 50, 20);
+		rect(areaSpaceInfo[2], areaSpaceInfo[3], areaSpaceInfo[0], areaSpaceInfo[1]);
+
+		// Area 4: Trash Area
+		areaSpaceInfo = areaSpace(4);
+		fill(10, 50, 50, 20);
+		rect(areaSpaceInfo[2], areaSpaceInfo[3], areaSpaceInfo[0], areaSpaceInfo[1]);
+	}
+
+	public int getFitnessValue(int index) {
+		// 各エリアごとに点数を返す
+		int currentAreaID = iconArray[index].getAreaID();
+		if (currentAreaID == 1)
+			return 100;
+		else if (currentAreaID == 2)
+			return 66;
+		else if (currentAreaID == 3)
+			return 33;
+		else if (currentAreaID == 4)
+			return 0;
+		else
+			return 0;
+	}
+
+	protected void apportSimilarIndividualIcons() {
+		// 正規化したレンジの20%内の距離をもつ個体を引き寄せる
+		int targetIndex = currentDraggingIndex;
+
+		//if (lastApportTargetIconIndex != targetIndex) {
+		if(true){
+			iconArray[targetIndex].initializeApportSpace();
+			iconArray[targetIndex].setApportCenterFlag(true);
+
+			double minDistance = 0.0, maxDistance = 1.0;
+			// Normalize
+			for (int i = 0; i < numOfIndividual; i++) {
+				double currentDistance = distancesOfIndividuals[targetIndex][i];
+				if (i == 0) {
+					minDistance = currentDistance;
+					maxDistance = currentDistance;
+				} else if (currentDistance < minDistance)
+					minDistance = currentDistance;
+				else if (currentDistance > maxDistance)
+					maxDistance = currentDistance;
+
+			}
+			//System.err.print("ShoppingBasket_IEC:Apports:" + targetIndex);
+			for (int i = 0; i < numOfIndividual; i++) {
+				if (distancesOfIndividuals[targetIndex][i] <= 0.5 * maxDistance
+						&& i != targetIndex && 
+						iconArray[targetIndex].getAreaID() == iconArray[i].getAreaID()) {
+					//System.err.print(":" + i);
+					int emptySpaceIndex = iconArray[targetIndex].getEmptyApportSpace();
+					if (emptySpaceIndex != -1) {
+						if (iconArray[targetIndex].setApportSpace(iconArray[i], emptySpaceIndex) != true) {
+							System.err.println("ShoppingBasket_IEC:setApportSpace returns false. Index:"
+											+ targetIndex + "," + i);
+						} else {
+							if(iconArray[i].onApported){
+								//既に他のターゲットにApportされている場合，もしくはそれがセンターだった場合そっちをクリアしてから引き寄せ
+								int previousContainSpace = iconArray[i].apportTarget.getContainSpaceIndex(iconArray[i]);
+								if(previousContainSpace >= 0 && previousContainSpace <= 7)
+									iconArray[i].apportTarget.apportContainSpace[previousContainSpace] = -1;
+							}
+							iconArray[i].setApportCenterFlag(false);
+							iconArray[i].setApportedFlag(true);
+							iconArray[i]
+									.setApportTarget(iconArray[targetIndex]);
+							//System.err.println("Setting of apport config is sucseed:" + targetIndex + ":" + i);
+						}
+					}
+					else{
+						System.err.println("getEmptyApportSpace return -1");
+					}
+				}
+				//System.err.println();
+			}
+			lastApportTargetIconIndex = targetIndex;
+		}
+		// double distanceRange = maxDistance - minDistance;
+		// x : maxDistance <= 0.3 : 1;
+
+	}
+}

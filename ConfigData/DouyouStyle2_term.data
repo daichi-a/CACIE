@@ -1,0 +1,153 @@
+Population
+NumberOfIndividuals,16
+Individual
+IDNumber,0
+NumberOfNotes,2
+Event
+37,100,0,16
+35,100,16,16
+Genom
+S 1 2
+\e
+Individual
+IDNumber,1
+NumberOfNotes,3
+Event
+35,100,0,16
+36,100,16,32
+39,100,32,32
+Genom
+S 1 2
+\e
+Individual
+IDNumber,2
+NumberOfNotes,3
+Event
+38,100,0,8
+36,100,8,8
+39,100,16,16
+Genom
+S 1 2
+\e
+Individual
+IDNumber,3
+NumberOfNotes,2
+Event
+39,100,0,16
+42,100,16,32
+Genom
+S 1 2
+\e
+Individual
+IDNumber,4
+NumberOfNotes,3
+Event
+35,100,0,8
+39,100,8,16
+40,100,8,16
+Genom
+S 1 2
+\e
+Individual
+IDNumber,5
+NumberOfNotes,5
+Event
+37,100,0,16
+35,100,16,8
+36,100,24,8
+37,100,32,8
+38,100,40,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,6
+NumberOfNotes,3
+Event
+39,100,0,16
+40,100,0,16
+43,100,0,16
+Genom
+S 1 2
+\e
+Individual
+IDNumber,7
+NumberOfNotes,4
+Event
+33,100,0,8
+35,100,0,8
+36,100,0,8
+37,100,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,8
+NumberOfNotes,1
+Event
+37,60,0,16
+Genom
+S 1 2
+\e
+Individual
+IDNumber,9
+NumberOfNotes,1
+Event
+38,70,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,10
+NumberOfNotes,1
+Event
+39,100,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,11
+NumberOfNotes,1
+Event
+40,100,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,12
+NumberOfNotes,1
+Event
+41,100,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,13
+NumberOfNotes,3
+Event
+34,100,0,8
+35,100,0,8
+36,100,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,14
+NumberOfNotes,3
+Event
+38,100,0,16
+39,100,0,16
+41,100,0,16
+Genom
+S 1 2
+\e
+Individual
+IDNumber,15
+NumberOfNotes,2
+Event
+41,100,0,16
+42,100,16,16
+Genom
+S 1 2
+\e
+\e

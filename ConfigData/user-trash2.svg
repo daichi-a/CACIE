@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 10.0.3, SVG Export Plug-In . SVG Version: 3.0.0 Build 77)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"    "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" [
+	<!ENTITY ns_flows "http://ns.adobe.com/Flows/1.0/">
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
+	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
+]>
+<svg 
+	 xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;" i:viewOrigin="261.3892 539.7051" i:rulerOrigin="0 0" i:pageBounds="0 840 592 0"
+	 xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+	 width="46.222" height="44.41" viewBox="0 0 46.222 44.41" overflow="visible" enable-background="new 0 0 46.222 44.41"
+	 xml:space="preserve">
+	
+		<sodipodi:namedview  id="base" showborder="true" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="1" inkscape:cx="26.709461" inkscape:cy="38.558683" inkscape:current-layer="layer1" showgrid="false" inkscape:grid-bbox="true" inkscape:document-units="px" inkscape:window-width="919" inkscape:window-height="944" inkscape:window-x="254" inkscape:window-y="96" inkscape:showpageshadow="false" gridempspacing="4" inkscape:object-nodes="true" inkscape:object-points="true" inkscape:object-bbox="true" inkscape:guide-bbox="false" inkscape:grid-points="true">
+		</sodipodi:namedview>
+	<metadata  id="metadata4">
+		<variableSets  xmlns="&ns_vars;">
+			<variableSet  varSetName="binding1" locked="none">
+				<variables></variables>
+				<v:sampleDataSets  xmlns="&ns_custom;" xmlns:v="&ns_vars;"></v:sampleDataSets>
+			</variableSet>
+		</variableSets>
+		<sfw  xmlns="&ns_sfw;">
+			<slices></slices>
+			<sliceSourceBounds  x="261.389" y="495.295" width="46.222" height="44.41" bottomLeftOrigin="true"></sliceSourceBounds>
+		</sfw>
+	</metadata>
+	<switch>
+		<foreignObject requiredExtensions="&ns_ai;" x="0" y="0" width="1" height="1">
+			<i:pgfRef  xlink:href="#adobe_illustrator_pgf">
+			</i:pgfRef>
+		</foreignObject>
+		<g i:extraneous="self">
+			<g id="レイヤー_1" i:layer="yes" i:dimmedPercent="50" i:rgbTrio="#4F008000FFFF">
+				<g id="layer1" inkscape:label="Layer 1" inkscape:groupmode="layer" i:knockout="Off">
+					<g id="g6707" i:knockout="Off">
+						
+							<linearGradient id="rect6709_1_" gradientUnits="userSpaceOnUse" x1="-91.1392" y1="2703.4395" x2="-91.1392" y2="2460.5801" gradientTransform="matrix(0.0628 0 0 -0.0387 28.9756 139.7071)">
+							<stop  offset="0" style="stop-color:#000000"/>
+							<stop  offset="0.5" style="stop-color:#000000"/>
+							<stop  offset="1" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#000000"/>
+							<a:midPointStop  offset="1" style="stop-color:#000000"/>
+						</linearGradient>
+						
+							<path id="rect6709" i:isolated="yes" i:knockout="Off" opacity="0.4021" fill="url(#rect6709_1_)" enable-background="new    " d="
+							M8.101,35.005h30.308v9.405H8.101V35.005z"/>
+						
+							<radialGradient id="path6711_1_" cx="153.1421" cy="2583.4395" r="117.1429" fx="153.1421" fy="2583.4395" gradientTransform="matrix(0.0628 0 0 -0.0387 28.9878 139.7071)" gradientUnits="userSpaceOnUse">
+							<stop  offset="0" style="stop-color:#000000"/>
+							<stop  offset="1" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#000000"/>
+							<a:midPointStop  offset="1" style="stop-color:#000000"/>
+						</radialGradient>
+						
+							<path id="path6711" sodipodi:nodetypes="cccc" i:isolated="yes" i:knockout="Off" opacity="0.4021" fill="url(#path6711_1_)" enable-background="new    " d="
+							M38.409,35.005v9.405c3.232,0.018,7.813-2.107,7.813-4.703S42.616,35.005,38.409,35.005z"/>
+						
+							<radialGradient id="path6713_1_" cx="535.5015" cy="2583.4395" r="117.1429" fx="535.5015" fy="2583.4395" gradientTransform="matrix(-0.0628 0 0 -0.0387 41.5215 139.7071)" gradientUnits="userSpaceOnUse">
+							<stop  offset="0" style="stop-color:#000000"/>
+							<stop  offset="1" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#000000"/>
+							<a:midPointStop  offset="1" style="stop-color:#000000"/>
+						</radialGradient>
+						
+							<path id="path6713" sodipodi:nodetypes="cccc" i:isolated="yes" i:knockout="Off" opacity="0.4021" fill="url(#path6713_1_)" enable-background="new    " d="
+							M8.101,35.005v9.405c-3.232,0.018-7.814-2.107-7.814-4.703S3.893,35.005,8.101,35.005z"/>
+					</g>
+					<g id="g3964" i:knockout="Off">
+						
+							<linearGradient id="path1751_1_" gradientUnits="userSpaceOnUse" x1="-260.9414" y1="619.7451" x2="-241.2155" y2="615.1635" gradientTransform="matrix(1.1722 0 0 -0.8601 317.562 557.6878)">
+							<stop  offset="0" style="stop-color:#B5C051"/>
+							<stop  offset="1" style="stop-color:#858E3F"/>
+							<a:midPointStop  offset="0" style="stop-color:#B5C051"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#B5C051"/>
+							<a:midPointStop  offset="1" style="stop-color:#858E3F"/>
+						</linearGradient>
+						
+							<linearGradient id="path1751_2_" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0" gradientTransform="matrix(0 0 0 0 nan nan)">
+							<stop  offset="0" style="stop-color:#616C08"/>
+							<stop  offset="1" style="stop-color:#495106"/>
+							<a:midPointStop  offset="0" style="stop-color:#616C08"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#616C08"/>
+							<a:midPointStop  offset="1" style="stop-color:#495106"/>
+						</linearGradient>
+						
+							<path id="path1751" sodipodi:nodetypes="ccccccc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off" fill="url(#path1751_1_)" stroke="url(#path1751_2_)" stroke-width="0.9959" d="
+							M2.983,12.486C2.939,12.451,4.709,37.992,4.709,38c0.167,2.551,1.562,3.482,3.122,3.486c0.056,0,29.284-0.004,29.907-0.006
+							c2.628-0.012,3.272-1.635,3.445-3.408c0.014-0.035,1.784-25.551,1.798-25.586C29.649,12.486,16.316,12.486,2.983,12.486z"/>
+						
+							<linearGradient id="path1893_1_" gradientUnits="userSpaceOnUse" x1="-256.8403" y1="793.9297" x2="-256.6851" y2="751.8458" gradientTransform="matrix(3.5204 0 0 -0.348 927.9331 281.6675)">
+							<stop  offset="0" style="stop-color:#000000"/>
+							<stop  offset="1" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0" style="stop-color:#000000"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#000000"/>
+							<a:midPointStop  offset="1" style="stop-color:#000000"/>
+						</linearGradient>
+						
+							<path id="path1893" sodipodi:nodetypes="cccc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off" fill="url(#path1893_1_)" d="
+							M42.232,15.01l-36.25-0.023c27.312,0.637,32.677,3.648,36.006,3.494L42.232,15.01z"/>
+						<g id="g144" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off">
+							<g id="path41" sodipodi:nodetypes="ccccccscc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off">
+								<path i:knockout="Off" opacity="0.4881" fill="#FFFFFF" d="M22.867,24.302l5.324,0.417l2.059-5.144l-2.436,1.757
+									c0,0-1.045-2.5-1.795-2.701c-0.751-0.201-3.954-0.134-3.954-0.134c1.019,0.259,1.811,2.055,1.822,2.075
+									c0.318,0.532,1.208,2.323,1.208,2.323L22.867,24.302z"/>
+							</g>
+							<g id="path130" sodipodi:nodetypes="ccczc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off">
+								<path i:knockout="Off" opacity="0.3095" fill="#FFFFFF" d="M23.526,20.744l-1.762,3.45l-3.623-2.344
+									c0,0,1.643-3.182,2.938-3.182C22.384,18.667,22.967,19.822,23.526,20.744z"/>
+							</g>
+							<g id="path139" sodipodi:nodetypes="ccccccscc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off">
+								<path i:knockout="Off" opacity="0.4881" fill="#FFFFFF" d="M26.12,28.936l-3.433,4.21l3.276,4.341l0.061-2.734
+									c0,0,2.412,0.234,2.966-0.324c0.554-0.557,2.858-3.369,2.858-3.369c-0.74,0.764-2.648,0.538-2.672,0.539
+									c-0.608,0.006-3.016-0.052-3.016-0.052L26.12,28.936z"/>
+							</g>
+							<g id="path140" sodipodi:nodetypes="ccczc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off">
+								<path i:knockout="Off" opacity="0.3095" fill="#FFFFFF" d="M29.341,31.117l-1.979-3.325l3.822-1.985
+									c0,0,1.815,3.082,1.15,4.223C31.665,31.178,30.4,31.099,29.341,31.117z"/>
+							</g>
+							<g id="path142" sodipodi:nodetypes="ccccccscc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off">
+								<path i:knockout="Off" opacity="0.4881" fill="#FFFFFF" d="M20.118,28.691l-1.694-4.58l-4.941,0.358l2.028,1.517
+									c0,0-1.401,2.029-1.206,2.8c0.194,0.771,1.293,3.964,1.293,3.964c-0.276-1.039,0.867-2.624,0.878-2.645
+									c0.299-0.545,1.548-2.656,1.548-2.656L20.118,28.691z"/>
+							</g>
+							<g id="path143" sodipodi:nodetypes="ccczc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off">
+								<path i:knockout="Off" opacity="0.3095" fill="#FFFFFF" d="M16.728,30.541l3.794-0.102l-0.23,4.389
+									c0,0-3.508,0.078-4.139-1.082C15.517,32.576,16.216,31.49,16.728,30.541z"/>
+							</g>
+						</g>
+						
+							<linearGradient id="path344_1_" gradientUnits="userSpaceOnUse" x1="-255.0103" y1="627.9961" x2="-247.2717" y2="604.5264" gradientTransform="matrix(1.1722 0 0 -0.8601 317.6404 557.5306)">
+							<stop  offset="0" style="stop-color:#FFFFFF"/>
+							<stop  offset="1" style="stop-color:#FFFFFF"/>
+							<a:midPointStop  offset="0" style="stop-color:#FFFFFF"/>
+							<a:midPointStop  offset="0.5" style="stop-color:#FFFFFF"/>
+							<a:midPointStop  offset="1" style="stop-color:#FFFFFF"/>
+						</linearGradient>
+						
+							<path id="path344" sodipodi:nodetypes="cccssssc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off" fill="url(#path344_1_)" d="
+							M40.74,19.247c-5.311,2.361-12.584,4.722-18.515,4.771c-6.521,0.056-11.326,3.196-16.193,5.606
+							c0.194,2.912,0.408,4.945,0.673,8.207c0.132,1.627,0.636,1.588,2.932,1.588c9.085,0,21.005,0.014,28.176,0.014
+							c1.755,0,1.555-1.266,1.649-2.479C39.92,31.088,40.333,25.137,40.74,19.247z"/>
+						<g id="path375" sodipodi:nodetypes="cssssss" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off">
+							
+								<linearGradient id="XMLID_1_" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="0" gradientTransform="matrix(0 0 0 0 nan nan)">
+								<stop  offset="0" style="stop-color:#FFFFFF"/>
+								<stop  offset="1" style="stop-color:#FFFFFF"/>
+								<a:midPointStop  offset="0" style="stop-color:#FFFFFF"/>
+								<a:midPointStop  offset="0.5" style="stop-color:#FFFFFF"/>
+								<a:midPointStop  offset="1" style="stop-color:#FFFFFF"/>
+							</linearGradient>
+							<path i:knockout="Off" opacity="0.2857" fill="none" stroke="url(#XMLID_1_)" stroke-width="0.9959" d="M4.396,15.108
+								c-0.051,0,0.837,12.817,1.543,21.806c0.182,2.308,0.552,3.246,1.985,3.246c11.816,0,28.61,0.087,29.183,0.084
+								c2.766-0.01,2.714-1.037,2.943-3.22c0.083-0.794,1.532-21.827,1.519-21.827C31.667,15.197,16.629,15.14,4.396,15.108z"/>
+						</g>
+					</g>
+					
+						<linearGradient id="path1841_1_" gradientUnits="userSpaceOnUse" x1="-273.8638" y1="635.4648" x2="-273.7502" y2="629.2386" gradientTransform="matrix(1.4964 0 0 -0.4896 432.8004 322.6164)">
+						<stop  offset="0" style="stop-color:#EFF3F4"/>
+						<stop  offset="1" style="stop-color:#939596"/>
+						<a:midPointStop  offset="0" style="stop-color:#EFF3F4"/>
+						<a:midPointStop  offset="0.5" style="stop-color:#EFF3F4"/>
+						<a:midPointStop  offset="1" style="stop-color:#939596"/>
+					</linearGradient>
+					
+						<path id="path1841" sodipodi:nodetypes="cssssscss" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off" fill="url(#path1841_1_)" stroke="#4D5506" stroke-width="0.9754" d="
+						M6.145,0.555c-1.066,0.002-1.96,0.027-2.446,1.043c-0.084,0.176-2.66,7.341-2.784,7.615c-1.061,2.339-0.083,5.286,1.966,5.266
+						c0.389-0.003,40.358,0.018,40.979,0c1.743-0.05,1.967-3.463,1.216-4.998C45.033,9.395,41.549,1.5,41.46,1.36
+						c-0.411-0.625-1.331-0.898-2.015-0.873C39.311,0.493,6.278,0.555,6.145,0.555z"/>
+					
+						<linearGradient id="path1864_1_" gradientUnits="userSpaceOnUse" x1="-263.481" y1="706.8525" x2="-246.6759" y2="706.8525" gradientTransform="matrix(2.3882 0 0 -0.5204 632.2896 374.4058)">
+						<stop  offset="0" style="stop-color:#575955"/>
+						<stop  offset="1" style="stop-color:#7C7E79"/>
+						<a:midPointStop  offset="0" style="stop-color:#575955"/>
+						<a:midPointStop  offset="0.5" style="stop-color:#575955"/>
+						<a:midPointStop  offset="1" style="stop-color:#7C7E79"/>
+					</linearGradient>
+					
+						<path id="path1864" sodipodi:nodetypes="cssssscss" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off" fill="url(#path1864_1_)" d="
+						M6.611,2.278c-0.99-0.013-1.055-0.052-1.277,0.664C5.282,3.107,3.208,9.612,3.127,9.865c-0.276,0.859,0.114,1.085,1.073,1.068
+						c0.34-0.006,37.556,0,38.097,0c0.768,0,0.996-0.258,0.822-0.868c-0.07-0.248-2.957-7.194-3.035-7.318
+						c-0.358-0.552-0.296-0.551-0.922-0.559C39.044,2.187,6.727,2.279,6.611,2.278z"/>
+					
+						<path id="path1880" sodipodi:nodetypes="cccccc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off" fill="#2E3436" d="
+						M6.08,2.259C5.707,2.289,5.527,2.401,5.371,2.903C5.319,3.069,3.249,9.577,3.167,9.83c-0.276,0.86,0.091,1.091,1.05,1.074
+						c0.017,0,1.964,0,2.148,0L6.08,2.259z"/>
+					
+						<linearGradient id="path1888_1_" gradientUnits="userSpaceOnUse" x1="-221.6313" y1="593.957" x2="-216.1537" y2="593.957" gradientTransform="matrix(0.7768 0 0 -1.6028 211.085 958.5587)">
+						<stop  offset="0" style="stop-color:#BABDB6"/>
+						<stop  offset="1" style="stop-color:#F1F5EC"/>
+						<a:midPointStop  offset="0" style="stop-color:#BABDB6"/>
+						<a:midPointStop  offset="0.5" style="stop-color:#BABDB6"/>
+						<a:midPointStop  offset="1" style="stop-color:#F1F5EC"/>
+					</linearGradient>
+					
+						<path id="path1888" sodipodi:nodetypes="cscccc" inkscape:r_cy="true" inkscape:r_cx="true" i:knockout="Off" fill="url(#path1888_1_)" d="
+						M39.215,2.17c0.453,0.004,0.586-0.005,0.876,0.555c0.04,0.077,2.891,6.989,2.993,7.242c0.348,0.975-0.315,0.954-1.366,0.982
+						c-0.2,0-2.563-0.022-2.796-0.023L39.215,2.17z"/>
+				</g>
+			</g>
+		</g>
+	</switch>
+	<i:pgf  id="adobe_illustrator_pgf">
+		<![CDATA[
+		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
+		]]>
+		<![CDATA[
+		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
+		]]>
+		<![CDATA[
+		HmNLBppzFKeTK63zVBSmE/e7FhTc5FFZaKBFqkUMUNzFYCGedHjCDygGAyWn+UiBIu/OBZdOgwYl
+icGt1MGrs9IQBZw0nS6tcdowg9bTPHUF6TUpRGFekuJNS8I0lqdbWEpSWTboadwy49yItLc07bTl
+XbdR63raiAIlHjZFOBpH0IdgpbnFNglFy6yjAYUROqFDOfQCNDBaRqBxFcOtvTQ/GAnYythNKnSA
+jS0HMwUjjjqnbXhvQTFtnTvtRYitv0gOmq9auc2N5VJHGTRZCoXeKqDoJjt3dUpWb66DPj3o04M+
+/UKlvO/aJioSRc8dGVn4UviagJgHt1igb4puDwD+ux4pXGVciuTpqQ5UwvQoOtK4CSrX86ANyHEl
+Hax9qn0Yd6kOtiyQABVtqkpTFcyFC8pVaywZ1Ri+kSlVwRYDM6EC5DqobnqgnpSkU4JUsGGpcl1U
+p9P114xGvqChkogSVmQtvoJikaZVIjE+j1QNr93h4c3lY/X7N58OAHkAyG2vvULLNpz0RstWavQ6
+0CZm2qbWruQyWMkej34hRbHUunZ4xB2ta/wl27jOaCx9Z10a5d+HBTay3MkqB4qVLqxrqdgJHoCK
+PBikpLFGU8gjf4JZlfoh2qfLaBQkf0Ej212lAAd+SLDmJec690xaJTJvfGEAZ8fZ8wUx2OySlsxM
++qYqDqWgI8UkT3d1uAfQR77RTI/D6zMhq4bGMzzlhYX1SgplAka64fjyH5vZ3WnSuna4Q4RtsUiM
+JnqFMpubygz2OZ7pK5R4K/vcuapv6KvUSAfj/EGM84Pi2SNIPiieCopn96bXEF9L/HUGYV6047B3
+ngx3jwZ6QzO+tXVvB0QqyJZxfzkd30yugb5bXOr5PRa2IMr9bK+lXdsXzfBO7s7ogvq7Xq89eXLS
+u0zeTHuDYTKtXc56H5KoNxqN5715MoE7YKQks/l4mkSzq/FHpECWLPmTJ51X3dr/B+gZc5w=
+		]]>
+	</i:pgf>
+</svg>

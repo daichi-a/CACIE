@@ -1,0 +1,99 @@
+Population
+NumberOfIndividuals,12
+Individual
+IDNumber,0
+NumberOfNotes,1
+Event
+35,100,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,1
+NumberOfNotes,1
+Event
+35,110,0,24
+Genom
+S 1 2
+\e
+Individual
+IDNumber,2
+NumberOfNotes,1
+Event
+35,80,0,48
+Genom
+S 1 2
+\e
+Individual
+IDNumber,3
+NumberOfNotes,1
+Event
+35,75,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,4
+NumberOfNotes,1
+Event
+36,90,0,8
+Genom
+S 1 2
+\e
+Individual
+IDNumber,5
+NumberOfNotes,1
+Event
+36,65,0,12
+Genom
+S 1 2
+\e
+Individual
+IDNumber,6
+NumberOfNotes,1
+Event
+37,70,0,24
+Genom
+S 1 2
+\e
+Individual
+IDNumber,7
+NumberOfNotes,1
+Event
+37,60,0,12
+Genom
+S 1 2
+\e
+Individual
+IDNumber,8
+NumberOfNotes,1
+Event
+38,0,0,4
+Genom
+S 1 2
+\e
+Individual
+IDNumber,9
+NumberOfNotes,1
+Event
+39,100,0,16
+Genom
+S 1 2
+\e
+Individual
+IDNumber,10
+NumberOfNotes,1
+Event
+40,100,0,24
+Genom
+S 1 2
+\e
+Individual
+IDNumber,11
+NumberOfNotes,1
+Event
+41,100,0,8
+Genom
+S 1 2
+\e
+\e
