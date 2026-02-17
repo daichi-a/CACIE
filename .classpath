@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/MusicLibrary"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/DJavaMusicLibrary"/>
 	<classpathentry exported="true" kind="lib" path="/Users/daichi/Dropbox/Documents/Programs/core.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/daichi/Dropbox/Documents/Programs/jogl.all.jar">
 		<attributes>
