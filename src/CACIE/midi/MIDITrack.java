@@ -14,6 +14,17 @@ public class MIDITrack{
     
     public static void addNoteToTrack(Track track, int channel, int noteNumber, int noteVelocity, long position, long length){
         try {
+            // Validate MIDI parameters
+            if (channel < 0 || channel > 15) {
+                throw new IllegalArgumentException("MIDI channel must be between 0 and 15");
+            }
+            if (noteNumber < 0 || noteNumber > 127) {
+                throw new IllegalArgumentException("MIDI note number must be between 0 and 127");
+            }
+            if (noteVelocity < 0 || noteVelocity > 127) {
+                throw new IllegalArgumentException("MIDI velocity must be between 0 and 127");
+            }
+            
             // Create note on event
             MidiEvent noteOnEvent = new MidiEvent(
                 new ShortMessage(ShortMessage.NOTE_ON, channel, noteNumber, noteVelocity),
@@ -29,11 +40,22 @@ public class MIDITrack{
             track.add(noteOffEvent);
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("channel:" + channel);
+            System.err.println("note numer:" + noteNumber);
+            System.err.println("note velocity:" + noteVelocity);
         }
     }
     
     public static void addProgramChangeEventTo(Track track, int trackIndex, int channel, int instrument, long position){
         try {
+            // Validate MIDI parameters
+            if (channel < 0 || channel > 15) {
+                throw new IllegalArgumentException("MIDI channel must be between 0 and 15");
+            }
+            if (instrument < 0 || instrument > 127) {
+                throw new IllegalArgumentException("MIDI instrument number must be between 0 and 127");
+            }
+            
             MidiEvent programChangeEvent = new MidiEvent(
                 new ShortMessage(ShortMessage.PROGRAM_CHANGE, channel, instrument, 0),
                 position
