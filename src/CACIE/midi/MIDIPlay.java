@@ -2,6 +2,7 @@ package CACIE.midi;
 
 import java.io.File;
 import javax.sound.midi.*;
+import javax.sound.midi.MetaEventListener;
 
 import CACIE.*;
 
@@ -41,7 +42,6 @@ public class MIDIPlay{
     		System.exit(1);
     	}
 	
-    	//?��ȉ�JDK?��̃o?��O?��̂�?��߂ɏ�?��?��?��Ȃ�?��Ⴂ?��?��?��Ȃ�?��R?��[?��h
     	sequencer.addMetaEventListener(new MetaEventListener(){
     		public void meta(MetaMessage event){
     			if(event.getType() == 47){

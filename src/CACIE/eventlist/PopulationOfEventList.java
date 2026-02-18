@@ -14,7 +14,7 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
-import javax.sound.midi.Track;
+//import javax.sound.midi.Track;
 
 import CACIE.genome.Notes;
 
@@ -138,7 +138,7 @@ public class PopulationOfEventList
 			sequencer.setSequence(sequence);
 			
 			// Add tracks to the sequence
-			Track track = sequence.createTrack();
+			//Track track = sequence.createTrack();
 			
 			// This would need to be implemented based on the actual note data
 			// For now, just opening the sequencer

@@ -1,12 +1,13 @@
 package CACIE.eventlist;
 
-import CACIE.gui.ScoreTrackPanel;
+import gui.ScoreTrackPanel;
+import CACIE.genome.OneNote;
+//import CACIE.eventlist.CommonEventList;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-
-import CACIE.genome.OneNote;
 import basic.Fraction;
+
 import basic.NoteEvent;
 import basic.TrackData;
 
