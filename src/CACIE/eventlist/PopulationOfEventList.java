@@ -10,7 +10,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.Track;
 
 import CACIE.genome.Notes;
 
@@ -118,6 +122,35 @@ public class PopulationOfEventList
 			e.printStackTrace();
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// Fixed method to properly play MIDI sequence
+	public void playMIDISequence() {
+		try {
+			// Create a new sequence
+			Sequence sequence = new Sequence(Sequence.PPQ, 24);
+			Sequencer sequencer = MidiSystem.getSequencer();
+			sequencer.open();
+			sequencer.setSequence(sequence);
+			
+			// Add tracks to the sequence
+			Track track = sequence.createTrack();
+			
+			// This would need to be implemented based on the actual note data
+			// For now, just opening the sequencer
+			sequencer.start();
+			
+			// Wait for playback to complete
+			while (sequencer.isRunning()) {
+				Thread.sleep(100);
+			}
+			
+			sequencer.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

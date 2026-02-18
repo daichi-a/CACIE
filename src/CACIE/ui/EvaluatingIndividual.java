@@ -144,16 +144,21 @@ public class EvaluatingIndividual extends JPanel implements ActionListener {
 		if (st.equals("Store")) {
 			opWin.sendStore(this.eventList);
 		} else if (e.getSource() == viewSingleTreeButton) {
-			TreeEditor editor = new TreeEditor(opWin, inDex);
-			JDialog dialog = new JDialog(opWin.topFrame);
-			dialog.add(editor);
-			dialog.setVisible(true);
-			dialog.pack();
+			if (opWin != null) {
+				TreeEditor editor = new TreeEditor(opWin, inDex);
+				JDialog dialog = new JDialog(opWin.topFrame);
+				dialog.add(editor);
+				dialog.setVisible(true);
+				dialog.pack();
+			}
 		} else if (e.getSource() == putTreeViewButton) {
-			Motif_simpleTree_Individual individual = this.opWin
-					.getIndividual(inDex);
-			TreeModel treeModel = getTreeModel(individual);
-			opWin.treeSelect(treeModel, inDex);
+			if (opWin != null) {
+				Motif_simpleTree_Individual individual = this.opWin.getIndividual(inDex);
+				if (individual != null) {
+					TreeModel treeModel = getTreeModel(individual);
+					opWin.treeSelect(treeModel, inDex);
+				}
+			}
 		}
 	}
 
