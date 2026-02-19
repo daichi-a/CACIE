@@ -7,5 +7,7 @@
 			"path": "../DJavaMusicLibrary"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"java.dependency.syncWithFolderExplorer": true
+	}
 }
