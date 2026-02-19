@@ -72,8 +72,6 @@ public class BreedingWindow extends OperationWindows implements ActionListener, 
         setupGUI();
         // tree edit panel
         this.initTreeEditPanel();
-        this.topFrame.setVisible(true);
-        this.topFrame.pack();
         instrumentNumber = 0;
     }
 
