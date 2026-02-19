@@ -1,0 +1,15 @@
+package CACIE;
+
+import CACIE.ui.*;
+
+public class CACIE_OID5 extends CACIE_O {
+	static {
+		System.setProperty("apple.awt.brushMetalLook", "true");
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+	}
+
+	public static void main(String Args[]) {
+		configures(Args);
+		new OperationWindows_GUI_OID5(16, notes, oprList, confList);
+	}	
+}

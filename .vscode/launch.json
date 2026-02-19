@@ -8,8 +8,15 @@
             "type": "java",
             "name": "CACIE_Start",
             "request": "launch",
+            "mainClass": "CACIE.CACIE_Start",
+            "projectName": "CACIE"
+        },
+        {
+            "type": "java",
+            "name": "CACIE_Start",
+            "request": "launch",
             "mainClass": "CACIE_Start",
-            "projectName": "CACIE_24ee82d3",
+            "projectName": "CACIE",
             "classPaths": [
                 "${workspaceRoot}/bin"
             ]
