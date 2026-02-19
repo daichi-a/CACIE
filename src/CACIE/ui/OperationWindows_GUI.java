@@ -27,7 +27,7 @@ import CACIE.eventlist.CommonEventList; //import CACIE.genome.Individual;
 import CACIE.eventlist.PopulationOfEventList;
 import CACIE.genome.Motif_simpleTree_Individual;
 import CACIE.genome.Population;
-import CACIE.ui.sphereGUI.SphereGUI;
+//import CACIE.ui.sphereGUI.SphereGUI;
 
 public class OperationWindows_GUI extends OperationWindows implements
 		ActionListener, ChangeListener {
@@ -101,8 +101,8 @@ public class OperationWindows_GUI extends OperationWindows implements
 		startTime = System.currentTimeMillis();
 		instrumentNumber = 0;
 	}
-
-	protected void generateSphereGUIWindow() {
+ 
+/* 	protected void generateSphereGUIWindow() {
 		SphereGUI sphereGUI = new SphereGUI(this);
 		sphereGUI.init();
 		JFrame frame = new JFrame();
@@ -111,16 +111,17 @@ public class OperationWindows_GUI extends OperationWindows implements
 		frame.setVisible(true);
 		System.out.println("SphereGUI");
 	}
-
+*/
 	public OperationWindows_GUI() {
 		this.populationSize = 16;
 		this.setUpGUI();
 	}
-
+ 
 	protected void generateNewPopulationDisplay() {
 		// Population Presentation Window
-		populationDisplay = new SphereGUI(this);
+		//populationDisplay = new SphereGUI(this);
 	}
+	
 
 	protected void generateGenomeStorageWindow() {
 		// Realizing Genome Storage

@@ -2,12 +2,12 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../DJavaMusicLibrary"
 		}
 	],
 	"settings": {
-		"java.dependency.syncWithFolderExplorer": true
+		"java.dependency.syncWithFolderExplorer": false,
+		"java.project.sourcePaths": [
+			"src/CACIE"
+		]
 	}
 }

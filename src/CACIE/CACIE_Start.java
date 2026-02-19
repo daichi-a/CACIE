@@ -15,12 +15,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import CACIE.ui.OperationWindows;
-import CACIE.ui.OperationWindows_GUI;
+//import CACIE.ui.OperationWindows_GUI;
 import CACIE.ui.OperationWindows_GUI_OI;
-import CACIE.ui.OperationWindows_GUI_OID5;
-import CACIE.ui.GLSphereGUI.OperationWindows_GUI_GLSphere;
-import CACIE.ui.ShoppingBasketGUI.OperationWindows_GUI_ShoppingBasket;
-import CACIE.ui.ShoppingBasketGUI.OperationWindows_GUI_ShoppingBasketD5;
+//import CACIE.ui.OperationWindows_GUI_OID5;
+//import CACIE.ui.GLSphereGUI.OperationWindows_GUI_GLSphere;
+//import CACIE.ui.ShoppingBasketGUI.OperationWindows_GUI_ShoppingBasket;
+//import CACIE.ui.ShoppingBasketGUI.OperationWindows_GUI_ShoppingBasketD5;
 
 public class CACIE_Start extends CACIE_O
 {
@@ -47,12 +47,15 @@ public class CACIE_Start extends CACIE_O
     JPanel interfaceSelectionPanel = new JPanel(new GridLayout(3, 1));
     interfaceSelectionPanel.setBorder(BorderFactory.createTitledBorder("Interfaces"));
     JCheckBox btnInterface1 = new JCheckBox("OI");
+    /*
     JCheckBox btnInterface2 = new JCheckBox("D");
     JCheckBox btnInterface3 = new JCheckBox("SB");
     JCheckBox btnInterface4 = new JCheckBox("OID5");
     JCheckBox btnInterface5 = new JCheckBox("DD5");
     JCheckBox btnInterface6 = new JCheckBox("SBD5");
+    */
     JCheckBox btnInterface7 = new JCheckBox("Classic");
+    JCheckBox btnInterface8 = new JCheckBox("Breeding");
         
     btnInterface1.setSelected(true);
     btnInterface1.addActionListener(new ActionListener()
@@ -63,6 +66,7 @@ public class CACIE_Start extends CACIE_O
         interfaceSelection.append("OI");
       }
     });
+    /*
     btnInterface2.addActionListener(new ActionListener()
     {
       public void actionPerformed(ActionEvent e)
@@ -111,6 +115,7 @@ public class CACIE_Start extends CACIE_O
         interfaceSelection.append("SBD5");
       }
     });
+    */
     btnInterface7.addActionListener(new ActionListener()
     {
       public void actionPerformed(ActionEvent e)
@@ -119,33 +124,50 @@ public class CACIE_Start extends CACIE_O
         interfaceSelection.append("Classic");
       }
     });
+    btnInterface8.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        interfaceSelection.setLength(0);
+        interfaceSelection.append("Breeding");
+      }
+    });
 
     
     ButtonGroup group = new ButtonGroup();
     group.add(btnInterface1);
+    /*
     group.add(btnInterface2);
     group.add(btnInterface3);
     group.add(btnInterface4);
     group.add(btnInterface5);
     group.add(btnInterface6);
+    */
     group.add(btnInterface7);
+    group.add(btnInterface8);
 
     btnInterface1.setBackground(Color.WHITE);
+    /*
     btnInterface2.setBackground(Color.WHITE);
     btnInterface3.setBackground(Color.WHITE);
     btnInterface4.setBackground(Color.WHITE);
     btnInterface5.setBackground(Color.WHITE);
     btnInterface6.setBackground(Color.WHITE);
+    */
     btnInterface7.setBackground(Color.WHITE);
-    
+    btnInterface8.setBackground(Color.WHITE);
+
     interfaceSelectionPanel.add(btnInterface1);
+    /*
     interfaceSelectionPanel.add(btnInterface2);
     interfaceSelectionPanel.add(btnInterface3);
     interfaceSelectionPanel.add(btnInterface4);
     interfaceSelectionPanel.add(btnInterface5);
     interfaceSelectionPanel.add(btnInterface6);
+    */
     interfaceSelectionPanel.add(btnInterface7);
-    
+    interfaceSelectionPanel.add(btnInterface8);
+
     topPanel.add(interfaceSelectionPanel, BorderLayout.WEST);
 
     JPanel parameterSelectionPanel = new JPanel(new GridLayout(5, 1, 20, 0));
@@ -186,7 +208,7 @@ public class CACIE_Start extends CACIE_O
         if( interfaceSelection.toString().equals("OI") )
         {
           new OperationWindows_GUI_OI(16, notes, oprList, confList);
-        }
+        }/*
         else if( interfaceSelection.toString().equals("D") )
         {
           new OperationWindows_GUI(16, notes, oprList, confList);
@@ -210,7 +232,7 @@ public class CACIE_Start extends CACIE_O
         else if( interfaceSelection.toString().equals("SBD5") )
         {
           new OperationWindows_GUI_ShoppingBasketD5(16, notes, oprList, confList);
-        }
+        }*/
         else if( interfaceSelection.toString().equals("Classic") )
         {
           new OperationWindows(16, notes, oprList, confList);
