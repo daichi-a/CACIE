@@ -1,8 +1,7 @@
 package CACIE;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.sound.midi.MetaMessage;
@@ -41,8 +40,8 @@ public class CACIE_O {
     protected static void configures(String configFile, String dataFile){
       setSEED();
       setupMiDiDevice();
-      String arg0;
-      String arg1;
+      //String arg0;
+      //String arg1;
       //InputStream configStream = CACIE_O.class.getResourceAsStream("./ConfigData/NHK_Yasu_2nd_config.config");
       //InputStream dataStream = CACIE_O.class.getResourceAsStream("./ConfigData/demo_nhk_diatonic_term.data");
       //System.out.println(configStream);
@@ -107,8 +106,8 @@ public class CACIE_O {
 		}
 //		System.err.println("uhawwwwwwwwwwww okwwwwwwww");
 
-		InputStreamReader ris = new InputStreamReader(System.in);
-		BufferedReader dis = new BufferedReader(ris);
+		//InputStreamReader ris = new InputStreamReader(System.in);
+		//BufferedReader dis = new BufferedReader(ris);
 //		System.err.println("Please input device number. Use internal synthesizer with no input");
 		String line = "";
 //		try {
@@ -179,8 +178,8 @@ public class CACIE_O {
 
 	protected static void setSEED() {
 		int seedNumber = -1;
-		InputStreamReader ris = new InputStreamReader(System.in);
-		BufferedReader dis = new BufferedReader(ris);
+		//InputStreamReader ris = new InputStreamReader(System.in);
+		//BufferedReader dis = new BufferedReader(ris);
 
 		//System.err.println("Uha wwww OK wwww");
 		//System.err.println("Please input SEED Number. Using time with no input.");
