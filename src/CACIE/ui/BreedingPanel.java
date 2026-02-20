@@ -14,39 +14,41 @@ public class BreedingPanel extends JPanel {
     private static final int CELL_WIDTH = 60;
     private static final int CELL_HEIGHT = 60;
     
-    private ArrayList<JLabel> labels;
-    private JLabel draggedLabel;
+    private ArrayList<JButton> buttons;
+    private JButton draggedButton;
     private Point dragOffset;
-    private Point lastMousePosition;
-    
-    // Grid positions for the two grids
     private Rectangle grid1Bounds;
     private Rectangle grid2Bounds;
+
+    private int mouseX, mouseY;
+    private boolean mousePressed = false;
     
     public BreedingPanel() {
         setLayout(null);
         setPreferredSize(new Dimension(800, 600));
         setBackground(Color.LIGHT_GRAY);
         
-        labels = new ArrayList<>();
+        buttons = new ArrayList<>();
         
         // Initialize grid bounds
         grid1Bounds = new Rectangle(50, 50, GRID1_WIDTH * CELL_WIDTH, GRID1_HEIGHT * CELL_HEIGHT);
         grid2Bounds = new Rectangle(50, 250, GRID2_WIDTH * CELL_WIDTH, GRID2_HEIGHT * CELL_HEIGHT);
         
-        // Create sample labels
-        createLabels();
+        // Create sample buttons
+        createButtons();
         
         // Add mouse listeners to the panel
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 handleMousePressed(e);
+                mousePressed = true;
             }
             
             @Override
             public void mouseReleased(MouseEvent e) {
                 handleMouseReleased(e);
+                mousePressed = false;
             }
         });
         
@@ -54,99 +56,116 @@ public class BreedingPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 handleMouseDragged(e);
+                mouseX = e.getX();
+                mouseY = e.getY();
+                repaint();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e){
+                //System.out.println("x:" + e.getX() + " y:" + e.getY());
+                mouseX = e.getX();
+                mouseY = e.getY();
+                repaint();
             }
         });
         
-        // Add a button to add new labels
-        JButton addButton = new JButton("Add Label");
+        // Add a button to add new buttons
+        JButton addButton = new JButton("Add Button");
         addButton.setBounds(50, 550, 100, 30);
-        addButton.addActionListener(e -> addNewLabel());
+        addButton.addActionListener(e -> addNewButton());
         add(addButton);
     }
-    
-    private void createLabels() {
-        // Create labels for the first grid (4x3)
+
+
+    private void createButtons() {
+        // Create buttons for the first grid (4x3)
         for (int i = 0; i < GRID1_WIDTH * GRID1_HEIGHT; i++) {
-            JLabel label = createDraggableLabel("Label " + (i + 1), grid1Bounds.x + (i % GRID1_WIDTH) * CELL_WIDTH, 
-                                               grid1Bounds.y + (i / GRID1_WIDTH) * CELL_HEIGHT);
-            labels.add(label);
-            add(label);
+            JButton button = createDraggableButton("Button " + (i + 1), 
+                    grid1Bounds.x + (i % GRID1_WIDTH) * CELL_WIDTH, 
+                    grid1Bounds.y + (i / GRID1_WIDTH) * CELL_HEIGHT);
+            buttons.add(button);
+            add(button);
         }
         
-        // Create labels for the second grid (8x4)
+        // Create buttons for the second grid (8x4)
         for (int i = 0; i < GRID2_WIDTH * GRID2_HEIGHT; i++) {
-            JLabel label = createDraggableLabel("Label " + (i + 1 + GRID1_WIDTH * GRID1_HEIGHT), 
-                                               grid2Bounds.x + (i % GRID2_WIDTH) * CELL_WIDTH, 
-                                               grid2Bounds.y + (i / GRID2_WIDTH) * CELL_HEIGHT);
-            labels.add(label);
-            add(label);
+            JButton button = createDraggableButton("Button " + (i + 1 + GRID1_WIDTH * GRID1_HEIGHT), 
+                    grid2Bounds.x + (i % GRID2_WIDTH) * CELL_WIDTH, 
+                    grid2Bounds.y + (i / GRID2_WIDTH) * CELL_HEIGHT);
+            buttons.add(button);
+            add(button);
         }
     }
     
-    private JLabel createDraggableLabel(String text, int x, int y) {
-        JLabel label = new JLabel(text, SwingConstants.CENTER);
-        label.setBounds(x, y, CELL_WIDTH, CELL_HEIGHT);
-        label.setOpaque(true);
-        label.setBackground(Color.CYAN);
-        label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        label.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-        return label;
+    private JButton createDraggableButton(String text, int x, int y) {
+        JButton button = new JButton(text);
+        button.setBounds(x, y, CELL_WIDTH, CELL_HEIGHT);
+        button.setOpaque(true);
+        button.setBackground(Color.CYAN);
+        button.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+        return button;
     }
     
     private void handleMousePressed(MouseEvent e) {
-        for (JLabel label : labels) {
-            if (label.getBounds().contains(e.getPoint())) {
-                draggedLabel = label;
-                dragOffset = new Point(label.getX() - e.getX(), label.getY() - e.getY());
-                lastMousePosition = e.getPoint();
-                label.setOpaque(true);
-                label.setBackground(Color.RED);
+        // Find which button was pressed
+        for (JButton button : buttons) {
+            if (button.getBounds().contains(e.getPoint())) {
+                draggedButton = button;
+                // Calculate offset between mouse and button position
+                dragOffset = new Point(button.getX() - e.getX(), button.getY() - e.getY());
+                // Highlight the dragged button
+                button.setOpaque(true);
+                button.setBackground(Color.RED);
                 break;
             }
         }
+        repaint();
     }
     
     private void handleMouseDragged(MouseEvent e) {
-        if (draggedLabel != null) {
+        if (draggedButton != null) {
+            // Calculate new position with offset - this makes the button follow the cursor exactly
             int newX = e.getX() + dragOffset.x;
             int newY = e.getY() + dragOffset.y;
             
-            // Move the label
-            draggedLabel.setLocation(newX, newY);
+            // Move the button
+            draggedButton.setLocation(newX, newY);
             
-            // Snap to grid if near grid boundary
-            snapToGrid(e.getPoint());
-            
-            // Update the label's position in the panel
-            draggedLabel.repaint();
+            // Repaint to show the movement
+            draggedButton.repaint();
         }
+        repaint();
     }
     
     private void handleMouseReleased(MouseEvent e) {
-        if (draggedLabel != null) {
-            // Determine which grid the label was dropped in
+        if (draggedButton != null) {
+            // Determine which grid the button was dropped in
             Rectangle targetGrid = determineTargetGrid(e.getPoint());
             
             if (targetGrid != null) {
                 // Snap to grid
                 Point snappedPosition = snapToGrid(e.getPoint());
                 
-                // Update label position
-                draggedLabel.setLocation(snappedPosition);
+                // Update button position
+                draggedButton.setLocation(snappedPosition);
                 
                 // Set action command based on grid and position
                 String actionCommand = getActionCommand(targetGrid, snappedPosition);
-                draggedLabel.setActionCommand(actionCommand);
+                //draggedButton.setActionCommand(actionCommand);
+                System.out.println(actionCommand);
                 
-                // Notify that label was moved
-                System.out.println("Label moved to: " + actionCommand);
+                // Notify that button was moved
+                System.out.println("Button moved to: " + actionCommand);
             }
             
             // Reset drag state
-            draggedLabel.setOpaque(true);
-            draggedLabel.setBackground(Color.CYAN);
-            draggedLabel = null;
+            draggedButton.setOpaque(true);
+            draggedButton.setBackground(Color.CYAN);
+            draggedButton = null;
         }
+        repaint();
     }
     
     private Point snapToGrid(Point mousePoint) {
@@ -197,9 +216,6 @@ public class BreedingPanel extends JPanel {
     }
     
     private String getActionCommand(Rectangle grid, Point position) {
-        int gridWidth = getGridWidth(grid);
-        int gridHeight = getGridHeight(grid);
-        
         int gridX = (position.x - grid.x) / CELL_WIDTH;
         int gridY = (position.y - grid.y) / CELL_HEIGHT;
         
@@ -208,18 +224,17 @@ public class BreedingPanel extends JPanel {
         return gridType + "_POS_" + gridX + "_" + gridY;
     }
     
-    private void addNewLabel() {
-        JLabel newLabel = createDraggableLabel("New Label", 50, 50);
-        labels.add(newLabel);
-        add(newLabel);
-        newLabel.repaint();
+    private void addNewButton() {
+        JButton newButton = createDraggableButton("New Button", 50, 50);
+        buttons.add(newButton);
+        add(newButton);
+        newButton.repaint();
     }
     
-    // Method to add action listener to labels
+    // Method to add action listener to buttons
     public void addLabelActionListener(ActionListener listener) {
-        for (JLabel label : labels) {
-            // Add action listener to the label (this would need to be implemented with custom component)
-            // For simplicity, we'll just use the command system
+        for (JButton button : buttons) {
+            button.addActionListener(listener);
         }
     }
     
@@ -250,5 +265,10 @@ public class BreedingPanel extends JPanel {
         g.setColor(Color.BLACK);
         g.drawString("Grid 1 (4x3)", grid1Bounds.x, grid1Bounds.y - 10);
         g.drawString("Grid 2 (8x4)", grid2Bounds.x, grid2Bounds.y - 10);
+
+        Color color1 = new java.awt.Color(0x99, 0, 0x0FF);//RGBの色を指定して色を作成
+		g.setColor(color1);//次に描画する時の色を指定
+		g.drawRect(mouseX-20, mouseY-20, 40, 40);
     }
+
 }

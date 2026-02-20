@@ -41,6 +41,7 @@ public class BreedingWindow extends OperationWindows implements ActionListener, 
     int instrumentNumber;
 
     private TreeEditPanel _treeEditPanel;
+    private BreedingPanel breedingPanel;
 
     public int populationSize;
 
@@ -56,8 +57,6 @@ public class BreedingWindow extends OperationWindows implements ActionListener, 
 
         populationSize = popSize;
         population = new Population(populationSize, genomeType, 0, notes, oprList, confList);
-
-   
 
         population.initPopulation();
         currentEventList = new ArrayList<CommonEventList>(this.populationSize);
@@ -94,20 +93,25 @@ public class BreedingWindow extends OperationWindows implements ActionListener, 
 
         this.topFrame.add(bottomPanel);
     }
+    
     private void setupGUI(){
         topFrame = new JFrame("CACIE Breeding");
         topFrame.setVisible(true);
         topFrame.pack();
-        topFrame.setSize(500, 600);
+        topFrame.setSize(1000, 700);
+        
+        // Create and add the BreedingPanel
+        breedingPanel = new BreedingPanel();
+        topFrame.add(breedingPanel, BorderLayout.CENTER);
     }
 
     public void actionPerformed(ActionEvent e){
-
 
     }
 
     public void stateChanged(ChangeEvent e){
 
+        
     }
 
     public void init(){
