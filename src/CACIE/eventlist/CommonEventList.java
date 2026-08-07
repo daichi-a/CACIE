@@ -325,7 +325,7 @@ public class CommonEventList
 				OneNote tmpNote = (OneNote) eventList.get(i);
 				tmpNote = fixParameter(tmpNote);
 				if(tmpNote.getVelocity() > 0 && tmpNote.getPosition() >= 0)
-					mySeq.setNoteToTrack(0, 0, convertChromaticToDiatonicInC(tmpNote.noteNumber()),
+					mySeq.setNoteToTrack(0, 0, fitMidiNoteNumber(convertChromaticToDiatonicInC(tmpNote.noteNumber())),
 							tmpNote.noteVelocity(), tmpNote.positionInMotif(), tmpNote.noteLength());
 			}
 		}
@@ -422,7 +422,7 @@ public class CommonEventList
 			OneNote tmpNote = (OneNote) eventList.get(i);
 			tmpNote = this.fixParameter(tmpNote);
 			if (tmpNote.getVelocity() > 0 && tmpNote.getPosition() >= 0)
-				mySeq.setNoteToTrack(0, 1, convertChromaticToDiatonicInC(tmpNote.noteNumber()), tmpNote.noteVelocity(), tmpNote.positionInMotif(), tmpNote
+				mySeq.setNoteToTrack(0, 1, fitMidiNoteNumber(convertChromaticToDiatonicInC(tmpNote.noteNumber())), tmpNote.noteVelocity(), tmpNote.positionInMotif(), tmpNote
 						.noteLength());
 		}
 
@@ -609,6 +609,12 @@ public class CommonEventList
 			tmpNote.setVelocity(0);
 
 		return tmpNote;
+	}
+
+	/** Keep a converted pitch inside the range accepted by a MIDI note event. */
+	private static int fitMidiNoteNumber(int noteNumber)
+	{
+		return Math.max(0, Math.min(127, noteNumber));
 	}
 
 	public boolean getPlayingState(){

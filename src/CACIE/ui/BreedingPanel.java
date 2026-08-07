@@ -1,267 +1,267 @@
 package CACIE.ui;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+
+import CACIE.eventlist.CommonEventList;
+import CACIE.genome.OneNote;
+
+/** Eight evaluated individuals and their playback/scale parameters. */
 public class BreedingPanel extends JPanel {
-    private static final int GRID1_WIDTH = 4;
-    private static final int GRID1_HEIGHT = 3;
-    private static final int GRID2_WIDTH = 8;
-    private static final int GRID2_HEIGHT = 4;
-    
-    // 【追加】Grid 3 のサイズ設定 (横 2, 縦 1)
-    private static final int GRID3_WIDTH = 2;
-    private static final int GRID3_HEIGHT = 1;
-    
-    private static final int CELL_WIDTH = 60;
-    private static final int CELL_HEIGHT = 60;
-    
-    // グリッドと色のマッピング (ID: 1, 2, 3)
-    private Map<Integer, Color> gridColors;
-    private ArrayList<Rectangle> grids = new ArrayList<>();
-    private Rectangle currentGrid;
-    private String currentCellIdStr = "outside";
+    public static final int SLOT_COUNT = 8;
+    private static final int TICKS_PER_QUARTER = 16;
 
-    public BreedingPanel() {
-        setLayout(null);
-        setPreferredSize(new Dimension(800, 600));
-        setBackground(Color.LIGHT_GRAY);
-        setOpaque(false);
-        
-        // グリッドの配色を設定
-        createGridColors();
-        
-        // グリッドを作成
-        createGrids();
-        
-        // マウスイベントリスナーを追加
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                handleMouseMoved(e);
-            }
-            
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                handleMouseMoved(e);
-            }
+    public enum PlaybackLength {
+        QUARTER_BEAT("1/4 beat", 4), HALF_BEAT("1/2 beat", 8),
+        ONE_BEAT("1 beat", 16), TWO_BEATS("2 beats", 32),
+        FOUR_BEATS("4 beats", 64), EIGHT_BEATS("8 beats", 128),
+        SIXTEEN_BEATS("16 beats", 256), ALL("All", Long.MAX_VALUE);
+
+        private final String label;
+        private final long ticks;
+
+        PlaybackLength(String label, long ticks) {
+            this.label = label;
+            this.ticks = ticks;
+        }
+
+        public long getTicks() { return ticks; }
+        @Override public String toString() { return label; }
+    }
+
+    public enum Scale {
+        DIATONIC("Diatonic"), MAJOR("Major"),
+        NATURAL_MINOR("Natural minor"), HARMONIC_MINOR("Harmonic minor"),
+        MELODIC_MINOR("Melodic minor"), PENTATONIC("Pentatonic"),
+        CHROMATIC("Chromatic");
+
+        private final String label;
+        Scale(String label) { this.label = label; }
+        @Override public String toString() { return label; }
+    }
+
+    private static final String[] TONICS = {
+        "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"
+    };
+
+    @SuppressWarnings("unchecked")
+    private final JComboBox<PlaybackLength>[] lengthBoxes = new JComboBox[SLOT_COUNT];
+    @SuppressWarnings("unchecked")
+    private final JComboBox<String>[] tonicBoxes = new JComboBox[SLOT_COUNT];
+    @SuppressWarnings("unchecked")
+    private final JComboBox<Scale>[] scaleBoxes = new JComboBox[SLOT_COUNT];
+    private final JPanel[] individualCards = new JPanel[SLOT_COUNT];
+    private final JLabel[] individualLabels = new JLabel[SLOT_COUNT];
+    private final List<CommonEventList> eventLists = new ArrayList<CommonEventList>(SLOT_COUNT);
+    private final JButton playButton = new JButton("Play sequence");
+    private final JButton stopButton = new JButton("Stop");
+
+    private Timer sequenceTimer;
+    private CommonEventList playingExcerpt;
+    private int playingIndex = -1;
+    private int tempo = CommonEventList.DT;
+
+    public BreedingPanel(List<CommonEventList> evaluatedIndividuals) {
+        setLayout(new BorderLayout(0, 12));
+        setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        setBackground(new Color(239, 242, 246));
+        setPreferredSize(new Dimension(1280, 360));
+        add(createHeader(), BorderLayout.NORTH);
+        add(createSlots(), BorderLayout.CENTER);
+        setEventLists(evaluatedIndividuals);
+    }
+
+    private JPanel createHeader() {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setOpaque(false);
+        JLabel title = new JLabel("Playback area - evaluated individuals");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
+        header.add(title, BorderLayout.WEST);
+
+        JPanel controls = new JPanel();
+        controls.setOpaque(false);
+        playButton.addActionListener(e -> playSequence());
+        stopButton.addActionListener(e -> stopPlayback());
+        stopButton.setEnabled(false);
+        controls.add(playButton);
+        controls.add(stopButton);
+        header.add(controls, BorderLayout.EAST);
+        return header;
+    }
+
+    private JPanel createSlots() {
+        JPanel slots = new JPanel(new GridLayout(1, SLOT_COUNT, 8, 0));
+        slots.setOpaque(false);
+        for (int i = 0; i < SLOT_COUNT; i++) {
+            JPanel column = new JPanel();
+            column.setLayout(new BoxLayout(column, BoxLayout.Y_AXIS));
+            column.setOpaque(false);
+
+            lengthBoxes[i] = new JComboBox<PlaybackLength>(PlaybackLength.values());
+            lengthBoxes[i].setSelectedItem(PlaybackLength.FOUR_BEATS);
+            tonicBoxes[i] = new JComboBox<String>(TONICS);
+            scaleBoxes[i] = new JComboBox<Scale>(Scale.values());
+            scaleBoxes[i].setSelectedItem(Scale.DIATONIC);
+            column.add(labeled("Length", lengthBoxes[i]));
+            column.add(labeled("Tonic", tonicBoxes[i]));
+            column.add(labeled("Scale", scaleBoxes[i]));
+
+            individualCards[i] = new JPanel(new BorderLayout());
+            individualCards[i].setPreferredSize(new Dimension(130, 105));
+            individualCards[i].setMaximumSize(new Dimension(Integer.MAX_VALUE, 105));
+            individualLabels[i] = new JLabel("Individual " + (i + 1), SwingConstants.CENTER);
+            individualLabels[i].setForeground(Color.WHITE);
+            individualLabels[i].setFont(individualLabels[i].getFont().deriveFont(Font.BOLD));
+            individualCards[i].add(individualLabels[i], BorderLayout.CENTER);
+            column.add(individualCards[i]);
+            slots.add(column);
+        }
+        updateCardBorders();
+        return slots;
+    }
+
+    private JPanel labeled(String text, JComboBox<?> control) {
+        JPanel panel = new JPanel(new BorderLayout(0, 2));
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 6, 0));
+        JLabel label = new JLabel(text);
+        label.setFont(label.getFont().deriveFont(11f));
+        panel.add(label, BorderLayout.NORTH);
+        panel.add(control, BorderLayout.CENTER);
+        return panel;
+    }
+
+    public final void setEventLists(List<CommonEventList> individuals) {
+        stopPlayback();
+        eventLists.clear();
+        if (individuals != null) {
+            eventLists.addAll(individuals.subList(0, Math.min(SLOT_COUNT, individuals.size())));
+        }
+        for (int i = 0; i < SLOT_COUNT; i++) {
+            boolean occupied = i < eventLists.size() && eventLists.get(i) != null;
+            individualCards[i].setBackground(occupied
+                ? new Color(105, 156, 205) : new Color(168, 176, 184));
+            individualLabels[i].setText(occupied
+                ? "<html><center>Individual " + (i + 1) + "<br>"
+                    + eventLists.get(i).getNumOfNotes() + " notes</center></html>"
+                : "Empty");
+        }
+        playButton.setEnabled(!eventLists.isEmpty());
+    }
+
+    public void playSequence() {
+        stopPlayback();
+        playButton.setEnabled(false);
+        stopButton.setEnabled(true);
+        playNext(0);
+    }
+
+    private void playNext(int index) {
+        if (index >= eventLists.size()) {
+            finishPlayback();
+            return;
+        }
+        playingIndex = index;
+        updateCardBorders();
+        long selectedTicks = getPlaybackTicks(index);
+        playingExcerpt = createExcerpt(eventLists.get(index), selectedTicks);
+        try {
+            playingExcerpt.setInstrumentNumber(eventLists.get(index).getInstrumentNumber());
+            playingExcerpt.playAsMIDISequence(tempo);
+        } catch (MidiUnavailableException | InvalidMidiDataException ex) {
+            ex.printStackTrace();
+        }
+
+        long ticks = effectiveDuration(playingExcerpt, selectedTicks);
+        int delay = (int) Math.max(100L, Math.min(Integer.MAX_VALUE,
+            Math.round(ticks * 60000.0 / (tempo * TICKS_PER_QUARTER))));
+        sequenceTimer = new Timer(delay, e -> {
+            playingExcerpt.stopMIDISequence();
+            playingExcerpt = null;
+            playNext(index + 1);
         });
+        sequenceTimer.setRepeats(false);
+        sequenceTimer.start();
     }
-    
-    private void createGridColors() {
-        gridColors = new HashMap<>();
-        
-        // Grid 1 - Sky Blue (既存)
-        gridColors.put(1, new Color(135, 206, 235));
-        
-        // Grid 2 - Pale Green (既存)
-        gridColors.put(2, new Color(152, 251, 152));
-        
-        // Grid 3 - Cyan/Aqua の系に（新規追加）
-        gridColors.put(3, new Color(0, 255, 255)); 
-    }
-    
-    private void createGrids() {
-        grids.clear();
-        
-        // Grid 1 (既存)
-        Rectangle grid1 = new Rectangle(50, 50, GRID1_WIDTH * CELL_WIDTH, GRID1_HEIGHT * CELL_HEIGHT);
-        grids.add(grid1);
-        
-        // Grid 2 (既存：位置を調整して重なりなく配置）
-        // 元のコードの位置 (50, 250) を維持しつつ、Grid3 の影響を受けないようにします
-        Rectangle grid2 = new Rectangle(50, 250, GRID2_WIDTH * CELL_WIDTH, GRID2_HEIGHT * CELL_HEIGHT);
-        grids.add(grid2);
-        
-        // 【追加】Grid 3: Grid1 の横に配置 (幅方向に接続)
-        // x: Grid1 終了位置 + グリッド間隙なし、y: Grid1 と同じ
-        int grid3X = 50 + GRID1_WIDTH * CELL_WIDTH; 
-        int grid3Y = 50;
-        Rectangle grid3 = new Rectangle(grid3X, grid3Y, GRID3_WIDTH * CELL_WIDTH, GRID3_HEIGHT * CELL_HEIGHT);
-        grids.add(grid3);
-        
-        currentGrid = null;
-    }
-    
-    private void handleMouseMoved(MouseEvent e) {
-        String oldCellIdStr = getCurrentCellId();
-        
-        Rectangle newGrid = getGridAtPosition(e.getPoint());
-        String newCellIdStr = (newGrid != null) ? getCurrentCellIdFromGrid(newGrid, e) : "outside";
-        
-        if (!oldCellIdStr.equals(newCellIdStr)) {
-            System.out.println("Mouse entered/changed to: " + newCellIdStr);
-            currentGrid = newGrid;
-            currentCellIdStr = newCellIdStr;
-        }
-    }
-    
-    private Rectangle getGridAtPosition(Point point) {
-        for (Rectangle grid : grids) {
-            if (grid.contains(point)) {
-                return grid;
-            }
-        }
-        return null;
-    }
-    
-    // グリッドから現在のセル ID を取得（Gx,Cy,Rz 形式）
-    private String getCurrentCellIdFromGrid(Rectangle grid, MouseEvent e) {
-        int gridIndex = -1;
-        for (int i = 0; i < grids.size(); i++) {
-            if (grids.get(i).equals(grid)) { // equals() を使用して同一性を確認（== も可だが安全に）
-                gridIndex = i;
-                break;
-            }
-        }
-        
-        if (gridIndex == -1) return "outside";
-        
-        int cellX = (int) ((e.getX() - grid.x) / CELL_WIDTH);
-        int row = (int) ((e.getY() - grid.y) / CELL_HEIGHT);
-        
-        // グリッドの全体列オフセット計算
-        int overallColumn = cellX + 1;
-        if (gridIndex == 0) {
-            // Grid2 の場合は（元のロジックで）Offset が必要だが、Grid3 は Grid1 に続くため Offset が不要か？
-            // ただし、全体の列番号を一意にする必要があれば：
-            // Grid1: Col 1~4, Grid3: Col 5~6 (全体では連続させるなら)
-            // しかし「Global Column」として管理する必要がある場合は以下の計算を使用します。
-            if (gridIndex > 0) { 
-               // Grid2 のオフセットを維持しつつ、Grid3 は Grid1 と接続しているため追加しない場合と、全グリッドで番号を振る場合の選択があります。
-               // 今回は「Grid1 と Grid3」は隣接しているので、Global Column を単純に足します。
-               overallColumn += GRID1_WIDTH; 
-            } else if (gridIndex == 1) {
-                 // Grid2 の場合は元のロジック通りオフセットが必要（左側に Grid1 がいるため）
-                 overallColumn += GRID1_WIDTH + GRID3_WIDTH; // Grid3 も挟まっているなら考慮。
-            }
-        } else if (gridIndex == 2) {
-             // Grid3: Grid1 と隣接なので、Grid1 の列からカウントして良いが、Grid2 はそれより下の位置なので独立
-             overallColumn += GRID1_WIDTH + GRID3_WIDTH; // 横方向の全体列とする（任意）
-        }
 
-        // 簡易的だが明確な表現：各グリッド内のオフセットを返す
-        // グリッド全体の列番号を一意にするロジックは必要かどうかですが、ここでは「Grid 1 と接続している Grid3」を想定し、
-        // 全体の列番号を取得するために Grid1, Grid3 を連結したとみなします。
-        
-        // 【簡易修正：Global Column の計算を整理】
-        // Grid1: Col 1~4 | Grid2: 独立（下）| Grid3: Col 5~6 (Grid1 と連動)
-        if (gridIndex == 0 || gridIndex == 2) { 
-            overallColumn = cellX + 1; 
-            if (gridIndex == 2) { // Grid3 の場合、Grid1 に続いているため Grid1 の列数分を足す
-                 overallColumn += GRID1_WIDTH; 
-            } else { // Grid1 の場合はそのまま（ただし Grid2 は独立なのでその計算は不要）
+    private CommonEventList createExcerpt(CommonEventList source, long limit) {
+        CommonEventList result = new CommonEventList(0);
+        for (int i = 0; i < source.getNumOfNotes(); i++) {
+            OneNote note = (OneNote) source.get(i);
+            if (note.getPosition() >= limit) continue;
+            long available = limit == Long.MAX_VALUE ? note.getDuration() : limit - note.getPosition();
+            int duration = (int) Math.min(note.getDuration(), available);
+            if (duration > 0) {
+                result.add(new OneNote(note.getNoteNumber(), note.getVelocity(),
+                    note.getPosition(), duration));
             }
-        } else if (gridIndex == 1) { 
-             // Grid2: 独自の列番号を返す必要があるか？今回はシンプルに「Grid3」のみ Focus。
-             // Grid2 は元のロジックで良いが、全体列番号を要求される場合は以下。
-             // 今回は Grid3 だけにフォーカスするので、Grid2 の処理は簡略化します。
         }
+        return result;
+    }
 
-        return "G" + (gridIndex + 1) + ",C" + overallColumn + ",R" + (row + 1);
-    }
-    
-    // グリッドの現在の ID を取得（例外を防止）
-    private String getCurrentCellId() {
-        if (currentGrid == null || grids.isEmpty()) {
-            return "outside";
+    private long effectiveDuration(CommonEventList list, long selectedTicks) {
+        long duration = 0;
+        for (int i = 0; i < list.getNumOfNotes(); i++) {
+            OneNote note = (OneNote) list.get(i);
+            duration = Math.max(duration, note.getPosition() + note.getDuration());
         }
-        
-        for (int i = 0; i < grids.size(); i++) {
-            if (grids.get(i).equals(currentGrid)) {
-                try {
-                    String[] parts = currentCellIdStr.split(",");
-                    int gridIdx = Integer.parseInt(parts[0]);
-                    int colIdx = Integer.parseInt(parts[1]);
-                    int rowIdx = Integer.parseInt(parts[2]);
-                    return "G" + gridIdx + ",C" + colIdx + ",R" + rowIdx;
-                } catch (NumberFormatException ex) {
-                    continue;
-                }
-            }
+        return Math.max(1, selectedTicks == Long.MAX_VALUE ? duration : Math.min(duration, selectedTicks));
+    }
+
+    public void stopPlayback() {
+        if (sequenceTimer != null) {
+            sequenceTimer.stop();
+            sequenceTimer = null;
         }
-        return "outside";
+        if (playingExcerpt != null) {
+            playingExcerpt.stopMIDISequence();
+            playingExcerpt = null;
+        }
+        finishPlayback();
     }
-    
-    // グリッドの ID, 列ID, 行ID からユニークな色を取得するメソッド
-    private Color getCellColor(int gridId, int columnId, int rowId) {
-        // Hue: 度数 (0-360) をラップアラウンド対応で計算
-        float hueBase = (gridId - 1) * 90f; 
-        float hueColumn = (columnId - 1) * 45f;
-        float hueRow = (rowId - 1) * 30f;
-        
-        // 合計 Hue（ラップアラウンド対応）
-        float finalHue = Math.abs((hueBase + hueColumn + hueRow) % 360.0f);
-        // AWT の getHSBColor は 0-1 の浮動小数点数を必要とするので、度数を角度に変換する必要があります。
-        // ただし、getHSBColor の仕様により、引数は 0〜1 の範囲であることが一般的です。
-        // この場合、360° を 1.0 にマッピングするため、360 で割ります。
-        finalHue /= 360.0f; 
-        
-        float saturation = 0.5f + ((gridId * columnId + rowId) % 5) * 0.1f; 
-        // 輝度調整：Grid ID と Row ID に基づいて明るさを調整
-        float brightness = 0.5f + ((gridId + rowId * 2) % 4) * 0.1f - (columnId % 2 == 0 ? 0.05f : 0);
-        
-        return Color.getHSBColor(finalHue, saturation, brightness);
+
+    private void finishPlayback() {
+        playingIndex = -1;
+        updateCardBorders();
+        playButton.setEnabled(!eventLists.isEmpty());
+        stopButton.setEnabled(false);
     }
-    
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        // グリッド配列にアクセス（空かチェック済み）
-        if (grids.isEmpty()) return;
-        
-        for (int i = 0; i < grids.size(); i++) {
-            Rectangle grid = grids.get(i);
-            
-            // 【修正】gridColors を直接使用（map の index はインデックスから取得）
-            Integer idx = i + 1; // グリッド ID (1, 2, 3)
-            Color gridColor = gridColors.get(idx);
-            
-            if (gridColor == null) { // グリッドが null の場合でも null チェックは必要（安全策）
-                continue;
-            }
-            
-            int cols = grid.width / CELL_WIDTH;
-            int rows = grid.height / CELL_HEIGHT;
-            
-            for (int j = 0; j < rows; j++) { // 【修正】行ループの順序を正常に
-                for (int k = 0; k < cols; k++) { // 【修正】列ループの順序を正常に
-                    int cellX = grid.x + k * CELL_WIDTH;
-                    int cellY = grid.y + j * CELL_HEIGHT;
-                    
-                    // グリッド内での列・行番号（ユニークな色の計算用）
-                    // Grid1 と Grid3 は隣接しているため、Grid3 の場合でも独立した ID を使います。
-                    int columnId = k + 1; 
-                    int rowId = j + 1;
-                    
-                    Color cellColor = getCellColor(i + 1, columnId, rowId); // 【修正】gridId はインデックスから計算
-                    
-                    g.setColor(cellColor);
-                    // グリッド境界線は共通なので、最後の行と列のみ描画（共通のグリッドライン）
-                    if (k == cols - 1 || j == rows - 1) {
-                        g.setColor(Color.BLACK);
-                        g.drawRect(cellX, cellY, CELL_WIDTH, CELL_HEIGHT);
-                    } else {
-                        // グリッド間隙は必要なら BLACK にして区切りますが、
-                        // 今回は共通枠線（LIGHT_GRAY）なのでグレーで描画します。
-                        g.setColor(Color.LIGHT_GRAY); 
-                        g.drawRect(cellX, cellY, CELL_WIDTH, CELL_HEIGHT);
-                    }
-                }
-            }
+
+    private void updateCardBorders() {
+        for (int i = 0; i < SLOT_COUNT; i++) {
+            Color color = i == playingIndex ? new Color(255, 178, 36) : new Color(56, 82, 108);
+            individualCards[i].setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(color, i == playingIndex ? 4 : 2),
+                BorderFactory.createEmptyBorder(8, 5, 8, 5)));
         }
     }
-    
-    // グリッドオブジェクトから index を取得
-    private int getGridIndex(Rectangle grid) {
-        for (int i = 0; i < grids.size(); i++) {
-            if (grids.get(i).equals(grid)) return i + 1;
-        }
-        return -1;
+
+    public long getPlaybackTicks(int slot) {
+        return ((PlaybackLength) lengthBoxes[slot].getSelectedItem()).getTicks();
+    }
+    public String getTonic(int slot) { return (String) tonicBoxes[slot].getSelectedItem(); }
+    public Scale getScale(int slot) { return (Scale) scaleBoxes[slot].getSelectedItem(); }
+    public List<CommonEventList> getEventLists() { return Collections.unmodifiableList(eventLists); }
+
+    public void setTempo(int tempo) {
+        if (tempo <= 0) throw new IllegalArgumentException("Tempo must be positive.");
+        this.tempo = tempo;
     }
 }
