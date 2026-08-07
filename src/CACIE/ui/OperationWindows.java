@@ -22,6 +22,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.tree.TreeModel;
 
 import CACIE.eventlist.CommonEventList;
+import CACIE.eventlist.PlaybackSettings;
 import CACIE.genome.Individual;
 import CACIE.genome.Motif_simpleTree_Individual;
 import CACIE.genome.Population;
@@ -88,6 +89,7 @@ public class OperationWindows implements ActionListener, ChangeListener
 
     populationSize = popSize;
     thePopulation = new Population(populationSize, genomeType, 0, notes, oprList, confList);
+    thePopulation.setPlaybackSettings(PlaybackSettings.DEFAULT);
 
     setUpGUI();
 

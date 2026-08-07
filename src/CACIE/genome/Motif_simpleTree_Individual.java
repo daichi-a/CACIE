@@ -5,6 +5,8 @@ import java.util.StringTokenizer;
 
 import CACIE.RandomManager;
 import CACIE.eventlist.CommonEventList;
+import CACIE.eventlist.ScaleType;
+import CACIE.eventlist.PlaybackSettings;
 
 public class Motif_simpleTree_Individual extends Abstract_Individual implements Runnable
 {
@@ -28,10 +30,6 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
   protected int chromosomeMaxDepth;
   protected int chromosomeMaxLength;
   protected int chromosomeMinLength;
-  protected boolean rhythmFilter = false;
-  protected String rhythmFilterBeat;
-  protected boolean chordFilter = false;
-  protected boolean harmonize = false;
   protected int frontOffset = 0;
   protected int replacingNTOffset = 0;
   private CommonEventList evStocker;// For Threading
@@ -39,21 +37,6 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
   public void run()
   {
     this.evStocker = this.convertToEventList();
-  }
-
-  public boolean getRhythmFilterSwitch()
-  {
-    return rhythmFilter;
-  }
-
-  public boolean getChordFilterSwitch()
-  {
-    return chordFilter;
-  }
-
-  public boolean getHarmonizeSwitch()
-  {
-    return harmonize;
   }
 
   public CommonEventList getGeneratedEventList()
@@ -117,33 +100,6 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
       } else if (command.equals("LOG_FILE_NAME"))
       {
 
-      } else if (command.equals("RHYTHM_FILTER"))
-      {
-        String rhythmFilterSwitch = st.nextToken();
-        if (rhythmFilterSwitch.equals("ON"))
-        {
-          rhythmFilter = true;
-          rhythmFilterBeat = st.nextToken();
-        }
-      } else if (command.equals("CHORD_FIX"))
-      {
-        String codeFilterSwitch = st.nextToken();
-        if (codeFilterSwitch.equals("ON"))
-        {
-          chordFilter = true;
-        }
-      } else if (command.equals("CHORD_HARMONIZE"))
-      {
-        String harmonizeFilterSwitch = st.nextToken();
-        if (harmonizeFilterSwitch.equals("ON"))
-        {
-          if (chordFilter == true)
-          {
-            System.err.println("CHORD_FIX and CHORD_HARMONIZE are used exclusionary. Exiting.");
-            System.exit(1);
-          } else
-            harmonize = true;
-        }
       } else
       {
         System.err.println(command + " is not registrated. Ignoring.");
@@ -165,6 +121,9 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
     returnInd.chromosomeMaxDepth = chromosomeMaxDepth;
     returnInd.chromosomeMaxLength = chromosomeMaxLength;
     returnInd.chromosomeMinLength = chromosomeMinLength;
+    returnInd.configArray = configArray;
+    returnInd.frontOffset = frontOffset;
+    returnInd.replacingNTOffset = replacingNTOffset;
     if (returnInd.operatorFrom == true)
     {
       returnInd.operatorArray = operatorArray;
@@ -179,6 +138,25 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
     }
 
     return returnInd;
+  }
+
+  /** Builds an evaluation-only clone for a Breeding playback slot. */
+  public Motif_simpleTree_Individual createBreedingPlaybackClone(
+      double beats, int tonic, ScaleType scaleType)
+  { return createPlaybackClone(new PlaybackSettings(beats, tonic, scaleType)); }
+
+  public Motif_simpleTree_Individual createPlaybackClone(PlaybackSettings settings)
+  {
+    Motif_simpleTree_Individual result = (Motif_simpleTree_Individual) this.clone();
+    ArrayList<TreeNodes> decorated = new ArrayList<TreeNodes>(result.genomeArray.size() + 2);
+    if (!Double.isInfinite(settings.getBeats()))
+      decorated.add(MotifSimpleTreeNode.createBarFixNode(settings.getBeats(), result.configArray));
+    decorated.add(MotifSimpleTreeNode.createScaleNode(settings.getTonic(), settings.getScale(), result.configArray));
+    for (TreeNodes node : result.genomeArray)
+      decorated.add(node.clone());
+    result.genomeArray = decorated;
+    result.numOfNodes = decorated.size();
+    return result;
   }
 
   public void setConfigArray(ArrayList<String> configArray)
@@ -207,10 +185,6 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
     // }
     // 特殊なノードがトップにあった時
     frontOffset = 0;
-    if (getHarmonizeSwitch() || getChordFilterSwitch())
-      frontOffset++;
-    if (getRhythmFilterSwitch())
-      frontOffset++;
 
     // SpecialCale : genome length is too short
     if (genomeArray.size() <= chromosomeMinLength * 3)
@@ -319,10 +293,6 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
   {
     // 特殊なノードがトップに来ている時の余白の設定
     int frontOffset = 0;
-    if (getHarmonizeSwitch() || getChordFilterSwitch())
-      frontOffset++;
-    if (getRhythmFilterSwitch())
-      frontOffset++;
 
     // Check
     ArrayList<TreeNodes> copyArray = TreeIndividuals.copyGenomeArray(genomeArray);
@@ -385,10 +355,6 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
   {
     // 特殊なノードがトップに来ている時の余白の設定
     int frontOffset = 0;
-    if (getHarmonizeSwitch() || getChordFilterSwitch())
-      frontOffset++;
-    if (getRhythmFilterSwitch())
-      frontOffset++;
 
     // ArrayList<TreeNodes> returnArray = new ArrayList<TreeNodes>();
     ArrayList<TreeNodes> copyArray = TreeIndividuals.copyGenomeArray(genomeArray);
@@ -467,39 +433,21 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
     extractConfigsForInitialize();
 
     genomeArray = new ArrayList<TreeNodes>();
-    // 特殊なトップノードの指定 HARMONIZE or CHORDFIX, BARFIX
-
-    // HARMONIZE or CHORDFIX
-    genomeArray.ensureCapacity(genomeArray.size() + 1);
-    if (chordFilter)
-    {
-      TreeNodes tmpNode = MotifSimpleTreeNode.generate(TreeNodes.NONTERMINAL, mode, notes.size(), operatorArray, "CHORDFIX", configArray);
-      genomeArray.add(tmpNode);
-      stackCount += tmpNode.getStackCount();
-      tmpNumOfNodes++;
-    } else if (harmonize)
-    {
-      TreeNodes tmpNode = MotifSimpleTreeNode.generate(TreeNodes.NONTERMINAL, mode, notes.size(), operatorArray, "HARMONIZE", configArray);
-      genomeArray.add(tmpNode);
-      stackCount += tmpNode.getStackCount();
-      tmpNumOfNodes++;
-    }
-
     // BARFIX
     genomeArray.ensureCapacity(genomeArray.size() + 1);
-    if (rhythmFilter || chordFilter || harmonize)
+    if (false)
     {
       // RHYTHM_FILTERがONの時 (ChordFilterかHarmonizeがONの時には，自動的にONになる
       String filterBeatIDString = "";
-      if (rhythmFilterBeat.equals("4/4"))
+      if ("4/4".equals("4/4"))
         filterBeatIDString = "44";
-      else if (rhythmFilterBeat.equals("3/4"))
+      else if ("4/4".equals("3/4"))
         filterBeatIDString = "34";
-      else if (rhythmFilterBeat.equals("6/8"))
+      else if ("4/4".equals("6/8"))
         filterBeatIDString = "68";
       else
       {
-        System.err.println("RhythmFilterBeat is not able to be recognized: " + rhythmFilterBeat);
+        System.err.println("Legacy rhythm filter is disabled");
         System.exit(1);
       }
       TreeNodes tmpNode = MotifSimpleTreeNode.generate(TreeNodes.NONTERMINAL, mode, notes.size(), operatorArray, "BARFIX" + filterBeatIDString, configArray);
@@ -703,7 +651,19 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
   public CommonEventList convertToEventList()
   {
     CommonEventList eventList = this.culcEventList();
+    if (hasBreedingScaleDecorator())
+      eventList.setPitchEncoding(CommonEventList.PitchEncoding.MIDI_NOTE_NUMBER);
     return eventList;
+  }
+
+  private boolean hasBreedingScaleDecorator()
+  {
+    int limit = Math.min(2, genomeArray.size());
+    for (int i = 0; i < limit; i++)
+      if (genomeArray.get(i).getTermOrNot() == TreeNodes.NONTERMINAL
+          && genomeArray.get(i).getOperator() == TreeOperators.SCALE)
+        return true;
+    return false;
   }
 
   public void convertFromEventList(CommonEventList eventList)
@@ -777,6 +737,12 @@ public class Motif_simpleTree_Individual extends Abstract_Individual implements 
   public TreeNodes getNode(int index)
   {
     return genomeArray.get(index);
+  }
+
+  public Notes getTerminalNotes(int index)
+  {
+    if (index < 0 || index >= terminalNodesArray.size()) return new Notes();
+    return terminalNodesArray.get(index).clone();
   }
 
   public int getIndex(TreeNodes node)

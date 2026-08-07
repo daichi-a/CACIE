@@ -10,6 +10,7 @@ import javax.sound.midi.MidiUnavailableException;
 import CACIE.RandomManager;
 import CACIE.eventlist.CommonEventList;
 import CACIE.eventlist.PopulationOfEventList;
+import CACIE.eventlist.PlaybackSettings;
 
 public class Motif_simpleTree_Population extends Abstract_Population {
 	static int MAXEVLVALUE = 100;
@@ -399,10 +400,6 @@ public class Motif_simpleTree_Population extends Abstract_Population {
 		ArrayList<TreeNodes> secondGenom = secondInd.getGenomeArray();
 
 		int frontOffset = 0;
-		if(firstInd.getHarmonizeSwitch() || firstInd.getChordFilterSwitch())
-			frontOffset++;
-		if(firstInd.getRhythmFilterSwitch())
-			frontOffset++;
 		int firstCrossPoint = (int) Math.round(Math.floor(RandomManager
 				.getRandom()
 				* (firstInd.getNumOfNodes()-frontOffset))) + frontOffset;
@@ -511,10 +508,6 @@ public class Motif_simpleTree_Population extends Abstract_Population {
 
 		//特殊なノードがトップに来ている時の余白の設定
 		int frontOffset = 0;
-		if(returnInd.getHarmonizeSwitch() || returnInd.getChordFilterSwitch())
-			frontOffset++;
-		if(returnInd.getRhythmFilterSwitch())
-			frontOffset++;
 		
 		int counter = 0;
 		for (int i = frontOffset; i < SCTable1.length; i++) {
@@ -705,6 +698,16 @@ public class Motif_simpleTree_Population extends Abstract_Population {
 
 	}
 
+	/** Converts the selected source individual through output-only SCALE/BARFIX settings. */
+	public CommonEventList convertToPlaybackEventList(int popID,int index,PlaybackSettings settings){
+		Motif_simpleTree_Individual individual;
+		if(popID==0) individual=(Motif_simpleTree_Individual)thisGeneration.get(index);
+		else if(popID==1) individual=(Motif_simpleTree_Individual)nextGeneration.get(index);
+		else if(popID==2) individual=(Motif_simpleTree_Individual)genomeStocker.get(index);
+		else throw new IllegalArgumentException("Unknown population ID: "+popID);
+		return individual.createPlaybackClone(settings).convertToEventList();
+	}
+
 	public int reInject(CommonEventList eventList, int index) {
 		//indexが-1の時は一番fitnessが低いところに入れる
 		int indexToApply = index;
@@ -760,7 +763,7 @@ public class Motif_simpleTree_Population extends Abstract_Population {
 			tmpInd = (Motif_simpleTree_Individual) this.genomeStocker
 					.get(IDNumber);
 
-		CommonEventList tmpEventList = tmpInd.convertToEventList();
+		CommonEventList tmpEventList = tmpInd.createPlaybackClone(PlaybackSettings.DEFAULT).convertToEventList();
 		try {
 			tmpEventList.playAsMIDISequence();
 		} catch (MidiUnavailableException e) {
@@ -783,7 +786,7 @@ public class Motif_simpleTree_Population extends Abstract_Population {
 		else if (generationID == 2)
 			tmpInd = (Motif_simpleTree_Individual) this.genomeStocker
 					.get(IDNumber);
-		CommonEventList tmpEventList = tmpInd.convertToEventList();
+		CommonEventList tmpEventList = tmpInd.createPlaybackClone(PlaybackSettings.DEFAULT).convertToEventList();
 		tmpEventList.writeToFile(fileName);
 		tmpEventList.saveAsMIDISequence(fileName + ".mid");
 	}

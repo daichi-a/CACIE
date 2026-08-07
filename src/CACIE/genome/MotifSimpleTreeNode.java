@@ -4,9 +4,31 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import CACIE.RandomManager;
+import CACIE.eventlist.ScaleFilter;
+import CACIE.eventlist.ScaleType;
 
 public class MotifSimpleTreeNode
 {
+  public static TreeNodes createScaleNode(int tonic, ScaleType scaleType, ArrayList<String> configArray)
+  {
+    TreeNodes node = new TreeNodes();
+    node.setConfigArray(configArray);
+    node.setData(TreeOperators.SCALE);
+    node.setTermOrNot(TreeNodes.NONTERMINAL);
+    node.configureScale(tonic, scaleType);
+    return node;
+  }
+
+  public static TreeNodes createBarFixNode(double beats, ArrayList<String> configArray)
+  {
+    TreeNodes node = new TreeNodes();
+    node.setConfigArray(configArray);
+    node.setData(TreeOperators.BARFIX);
+    node.setTermOrNot(TreeNodes.NONTERMINAL);
+    node.setHasExtraArg(true);
+    node.setExtraArg(beats);
+    return node;
+  }
   protected static TreeNodes generate(int operatorMode, int numOfTerminalNodes, ArrayList<String> configArray)
   {
     TreeNodes returnNode = new TreeNodes();
@@ -221,8 +243,15 @@ public class MotifSimpleTreeNode
       data = nodeID;
       if (numOfParameter > 1)
       {
-	hasExtraArg = true;
-	extraArg = Double.parseDouble(eachEl[1]);
+	if (nodeID == TreeOperators.SCALE && numOfParameter >= 3)
+	{
+	  returnNode.configureScale(ScaleFilter.tonicFromName(eachEl[1]), ScaleType.valueOf(eachEl[2]));
+	}
+	else
+	{
+	  hasExtraArg = true;
+	  extraArg = Double.parseDouble(eachEl[1]);
+	}
 	/*
 	if (numOfParameter != 2){
 	  // RSA, RSP, RSD
@@ -240,8 +269,8 @@ public class MotifSimpleTreeNode
 
     returnNode.setData(data);
     returnNode.setTermOrNot(termOrNot);
-    returnNode.setHasExtraArg(hasExtraArg);
-    returnNode.setExtraArg(extraArg);
+      returnNode.setHasExtraArg(hasExtraArg);
+      returnNode.setExtraArg(extraArg);
 
     return returnNode;
   }

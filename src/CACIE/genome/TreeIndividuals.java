@@ -9,7 +9,6 @@ public class TreeIndividuals {
 	public static int POLYPHONY_MODE = 1024;
 	public static int MONOPHONY_MODE = 1025;
 	
-	public static int RHYTHM_FILTER_44 = 2000;
 
 	protected static ArrayList<TreeNodes> recursiveGenomeDevelopment(ArrayList<TreeNodes> baseArray) {
 		ArrayList<TreeNodes> returnArray = new ArrayList<TreeNodes>();

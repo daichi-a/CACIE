@@ -8,10 +8,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.nio.file.Paths;
+import CACIE.config.GPConfig;
 
 public class ConfigFile {
 	public static ArrayList<ArrayList<String>> readParametersFromFile(
 			String fileName) {
+		try {
+			GPConfig parsed = GPConfig.load(Paths.get(fileName));
+			ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>(2);
+			result.add(parsed.toOperatorArray());
+			result.add(parsed.toLegacyConfigArray());
+			for (String warning : parsed.getWarnings()) System.err.println("Config warning: " + warning);
+			return result;
+		} catch (IOException modernError) {
+			throw new IllegalArgumentException("Cannot read config: " + fileName, modernError);
+		}
+		/*
 		ArrayList<ArrayList<String>> returnArray = new ArrayList<ArrayList<String>>();
 		BufferedReader in;
 		ArrayList<String> OperatorArray = new ArrayList<String>();
@@ -116,11 +129,21 @@ public class ConfigFile {
 		returnArray.ensureCapacity(2);
 		returnArray.add(OperatorArray);
 		returnArray.add(ConfigArray);
-		return returnArray;
+		return returnArray; */
 	}
 	
     public static ArrayList<ArrayList<String>> readParametersFromFile(
         InputStream input) {
+    try {
+        GPConfig parsed = GPConfig.load(input);
+        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>(2);
+        result.add(parsed.toOperatorArray()); result.add(parsed.toLegacyConfigArray());
+        for (String warning : parsed.getWarnings()) System.err.println("Config warning: " + warning);
+        return result;
+    } catch (IOException modernError) {
+        throw new IllegalArgumentException("Cannot read config stream", modernError);
+    }
+    /*
     ArrayList<ArrayList<String>> returnArray = new ArrayList<ArrayList<String>>();
     BufferedReader in;
     ArrayList<String> OperatorArray = new ArrayList<String>();
@@ -225,6 +248,6 @@ public class ConfigFile {
     returnArray.ensureCapacity(2);
     returnArray.add(OperatorArray);
     returnArray.add(ConfigArray);
-    return returnArray;
+    return returnArray; */
 }
 }

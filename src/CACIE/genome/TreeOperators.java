@@ -43,13 +43,8 @@ public class TreeOperators
   public static int TP = 4097;
   public static int RV = 4098;
   
-  public static int BARFIX44 = 5099;
-  public static int BARFIX34 = 5098;
-  public static int BARFIX68 = 5097;
-
-  public static int CHORDFIX = 5089;
-  public static int HARMONIZE = 5088;
-  public static int BOSSAHARMONIZE = 5087;
+  public static int BARFIX = 5096;
+  public static int SCALE = 5086;
   
   public static String getOperatorAsString(int operator)
   {
@@ -104,16 +99,10 @@ public class TreeOperators
       returnString = new String("FILA");
     else if (operator == TreeOperators.ACML)
       returnString = new String("ACML");
-    else if (operator == TreeOperators.BARFIX44)
-    	returnString = new String("BARFIX44");
-    else if (operator == TreeOperators.BARFIX34)
-    	returnString = new String("BARFIX34");
-    else if(operator == TreeOperators.CHORDFIX)
-    	returnString = new String("CHORDFIX");
-    else if(operator == TreeOperators.HARMONIZE)
-    	returnString = new String("HARMONIZE");
-    else if(operator == TreeOperators.BOSSAHARMONIZE)
-    	returnString = new String("BOSSAHARMONIZE");
+    else if (operator == TreeOperators.BARFIX)
+      returnString = new String("BARFIX");
+    else if(operator == TreeOperators.SCALE)
+      returnString = new String("SCALE");
     else{
     	System.err.println("the opertor ID: " + operator +" is not registered.");
     	System.exit(1);
@@ -175,16 +164,10 @@ public class TreeOperators
       returnOperator = TreeOperators.FILA;
     else if (st.equals("ACML"))
       returnOperator = TreeOperators.ACML;
-    else if (st.equals("BARFIX44"))
-        returnOperator = TreeOperators.BARFIX44;
-    else if (st.equals("BARFIX34"))
-        returnOperator = TreeOperators.BARFIX34;
-    else if (st.equals("CHORDFIX"))
-    	returnOperator = TreeOperators.CHORDFIX;
-    else if(st.equals("HARMONIZE"))
-    	returnOperator = TreeOperators.HARMONIZE;
-    else if(st.equals("BOSSAHARMONIZE"))
-    	returnOperator = TreeOperators.BOSSAHARMONIZE;
+    else if (st.equals("BARFIX"))
+        returnOperator = TreeOperators.BARFIX;
+    else if(st.equals("SCALE"))
+        returnOperator = TreeOperators.SCALE;
     else{
     	System.err.println("Tree Operators: getOperatorFromString: the opertor string: " + st +" is not registered or terminal node.");
     	//System.exit(1);
@@ -236,16 +219,10 @@ public class TreeOperators
       returnValue = -1;
     else if (operator == TreeOperators.ACML)
       returnValue = 0;
-    else if (operator == TreeOperators.BARFIX44)
-    	returnValue = 0;
-    else if (operator == TreeOperators.BARFIX34)
-    	returnValue = 0;
-    else if(operator == TreeOperators.CHORDFIX)
-    	returnValue = 0;
-    else if(operator == TreeOperators.HARMONIZE)
-    	returnValue = 0;
-    else if(operator == TreeOperators.BOSSAHARMONIZE)
-    	returnValue = 0;
+    else if (operator == TreeOperators.BARFIX)
+      returnValue = 0;
+    else if(operator == TreeOperators.SCALE)
+      returnValue = 0;
     else{
     	System.err.println("The opertor ID: " + operator +" is not registered in stackCount List.");
     	System.exit(1);
@@ -357,16 +334,10 @@ public class TreeOperators
     {
       hasSpecialArg = false;
     }
-    else if (operator == BARFIX44)
-    	hasSpecialArg = false;
-    else if (operator == BARFIX34)
-    	hasSpecialArg = false;
-    else if(operator == CHORDFIX)
-    	hasSpecialArg = false;
-    else if(operator == HARMONIZE)
-    	hasSpecialArg = false;
-    else if(operator == BOSSAHARMONIZE)
-    	hasSpecialArg = false;
+    else if (operator == BARFIX)
+      hasSpecialArg = true;
+    else if(operator == SCALE)
+      hasSpecialArg = false;
     else{
     	System.err.println("the opertor ID: " + operator +" is not registered in extra arg list.");
     	System.exit(1);
@@ -430,16 +401,8 @@ public class TreeOperators
     {
       TreeOperators.ACML(returnNotes, firstNotes);
     }
-    else if(opr == TreeOperators.BARFIX44)
-    	TreeOperators.BARFIX44(returnNotes, firstNotes, configArray);
-    else if(opr == TreeOperators.BARFIX34)
-    	TreeOperators.BARFIX34(returnNotes, firstNotes, configArray);
-    else if(opr == TreeOperators.CHORDFIX)
-    	TreeOperators.CHORDFIX(returnNotes, firstNotes, configArray);
-    else if(opr == TreeOperators.HARMONIZE)
-    	TreeOperators.HARMONIZE(returnNotes, firstNotes, configArray);
-    else if(opr == TreeOperators.BOSSAHARMONIZE)
-    	TreeOperators.BOSSAHARMONIZE(returnNotes, firstNotes, configArray);
+    else if(opr == TreeOperators.BARFIX)
+      returnNotes.addNotes(Function_BARFIX.evl(firstNotes, baseArg));
 
     else{
     	System.err.println("the opertor ID: " + opr +" is not registered in eval list.");
@@ -1427,23 +1390,7 @@ public class TreeOperators
     }
   }
   
-  private static void BARFIX44(Notes returnNotes, Notes first, ArrayList<String> configArray){
-	  Function_BARFIX44.evl(returnNotes, first, configArray);
-  }
-  private static void BARFIX34(Notes returnNotes, Notes first, ArrayList<String> configArray){
-	  Function_BARFIX34.evl(returnNotes, first, configArray);
-  }
   
-  private static void CHORDFIX(Notes returnNotes, Notes first, ArrayList<String> configArray){
-	  Function_CHORDFIX.evl(returnNotes, first, configArray);
-  }
-  
-  private static void HARMONIZE(Notes returnNotes, Notes first, ArrayList<String> configArray){
-	  Function_HARMONIZE.evl(returnNotes, first, configArray);
-  }
-  private static void BOSSAHARMONIZE(Notes returnNotes, Notes first, ArrayList<String> configArray){
-	  Function_BOSSAHARMONIZE.evl(returnNotes, first, configArray);
-  }
   
 /*
   private static void PMA(Notes returnNotes, Notes first, Notes second)

@@ -164,9 +164,10 @@ public class CACIE_Start extends CACIE_O
 
     topPanel.add(interfaceSelectionPanel, BorderLayout.WEST);
 
-    JPanel parameterSelectionPanel = new JPanel(new GridLayout(5, 1, 20, 0));
+    JPanel parameterSelectionPanel = new JPanel(new GridLayout(6, 1, 20, 0));
     parameterSelectionPanel.setBorder(BorderFactory.createTitledBorder("Parameter Files"));
     JButton btnConfigFileRead = new JButton("Select Config File");
+    JButton btnConfigFileEdit = new JButton("Edit Config File");
     JButton btnDataFileRead = new JButton("Select Data File");
     btnConfigFileRead.addActionListener(new ActionListener()
     {
@@ -186,8 +187,16 @@ public class CACIE_Start extends CACIE_O
         dataFileSelection.append(dataFile);
       }
     });
+    btnConfigFileEdit.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        CACIE_ConfigEditor.main(new String[] { configFileSelection.toString() });
+      }
+    });
     parameterSelectionPanel.add(new JLabel());
     parameterSelectionPanel.add(btnConfigFileRead);
+    parameterSelectionPanel.add(btnConfigFileEdit);
     parameterSelectionPanel.add(new JLabel());
     parameterSelectionPanel.add(btnDataFileRead);
     parameterSelectionPanel.add(new JLabel());

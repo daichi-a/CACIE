@@ -19,10 +19,6 @@ public class MotifSimpleTreeOperator
   MotifSimpleTreeOperator(int mode, boolean headOrNot)
   {
     if (headOrNot){
-    	if(mode == TreeIndividuals.RHYTHM_FILTER_44){
-    		this.operator = TreeOperators.BARFIX44;
-    	}
-    	
       int setV = (int) Math.round(Math.floor(RandomManager.getRandom() * 2));
       if (setV == 0)
 	this.operator = TreeOperators.S;

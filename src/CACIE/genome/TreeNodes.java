@@ -2,6 +2,9 @@ package CACIE.genome;
 
 import java.util.ArrayList;
 
+import CACIE.eventlist.ScaleFilter;
+import CACIE.eventlist.ScaleType;
+
 // tanji's addtion ( "" -> public)
 public class TreeNodes
 {
@@ -11,7 +14,7 @@ public class TreeNodes
   public static int RECURSIVENODE = 4;
 
   private int termOrNot; // Terminal or NonTerminal
-  private int operatorMode = -1; // MONOPHONY, POLYPHONY, RHYTHM_FILTER_44
+  private int operatorMode = -1;
   private int stackCount;
   private int data;
   private int numOfTerminalNodes;
@@ -19,6 +22,8 @@ public class TreeNodes
   private double extraArg = 0;
   private boolean hasRecursivePotential = false;
   private int recursivePower = 1;
+  private int scaleRoot = 0;
+  private ScaleType scaleType = ScaleType.DIATONIC;
 
   private ArrayList<String> configArray;
   
@@ -37,6 +42,8 @@ public class TreeNodes
     returnNode.extraArg = this.extraArg;
     returnNode.hasRecursivePotential = this.hasRecursivePotential;
     returnNode.recursivePower = this.recursivePower;
+    returnNode.scaleRoot = this.scaleRoot;
+    returnNode.scaleType = this.scaleType;
     returnNode.configArray = this.configArray;
     
     return returnNode;
@@ -116,6 +123,22 @@ public class TreeNodes
     this.extraArg = extraArg;
   }
 
+  public void configureScale(int root, ScaleType type)
+  {
+    this.scaleRoot = Math.floorMod(root, 12);
+    this.scaleType = type;
+  }
+
+  public int getScaleRoot()
+  {
+    return scaleRoot;
+  }
+
+  public ScaleType getScaleType()
+  {
+    return scaleType;
+  }
+
   protected void setHasRecursivePotential(boolean hasRecursivePotential)
   {
     this.hasRecursivePotential = hasRecursivePotential;
@@ -131,7 +154,9 @@ public class TreeNodes
     String returnString = new String("NotOperator");
     if (this.termOrNot == TreeNodes.NONTERMINAL)
     {
-      if (this.hasExtraArg == false)
+	if (this.data == TreeOperators.SCALE)
+	  returnString = "SCALE_" + ScaleFilter.tonicName(scaleRoot) + "_" + scaleType.name();
+      else if (this.hasExtraArg == false)
 	returnString = TreeOperators.getOperatorAsString(this.data);
       else if (this.hasExtraArg)
       {
@@ -174,7 +199,12 @@ public class TreeNodes
   protected ArrayList<Notes> evaluate(int opr, ArrayList<Notes> notes)
   {
     ArrayList<Notes> returnArrayList = new ArrayList<Notes>();
-    returnArrayList = TreeOperators.evlOperator(opr, extraArg, recursivePower, notes, configArray);
+    if (opr == TreeOperators.SCALE)
+    {
+      returnArrayList.add(ScaleFilter.apply(notes.get(0), scaleType, scaleRoot));
+    }
+    else
+      returnArrayList = TreeOperators.evlOperator(opr, extraArg, recursivePower, notes, configArray);
     return returnArrayList;
   }
 

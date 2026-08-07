@@ -17,6 +17,7 @@ import CACIE.midi.MIDISequence;
 
 public class CommonEventList
 {
+	public enum PitchEncoding { DIATONIC_DEGREE, MIDI_NOTE_NUMBER }
 	
 	public static int DIATONIC_inC = 1;
 	public static int CHROMATIC = 0;
@@ -36,6 +37,7 @@ public class CommonEventList
 	private boolean playingState = false;
 	
 	private int instrumentNumber;
+	private PitchEncoding pitchEncoding = PitchEncoding.DIATONIC_DEGREE;
 	public int DI = 0; // Default Instrument
 	
 	// Constructor
@@ -180,6 +182,14 @@ public class CommonEventList
 	public void setInstrumentNumber(int _instrumentNumber){
 		instrumentNumber = _instrumentNumber;
 	}
+
+	public PitchEncoding getPitchEncoding(){
+		return pitchEncoding;
+	}
+
+	public void setPitchEncoding(PitchEncoding pitchEncoding){
+		this.pitchEncoding = pitchEncoding;
+	}
 	
 	protected void writeEventListPart(BufferedWriter out)
 	{
@@ -299,49 +309,29 @@ public class CommonEventList
 	
 	public void playAsMIDISequence() throws MidiUnavailableException, InvalidMidiDataException
 	{
-		MIDISequence mySeq = new MIDISequence();
-		mySeq.setTempo(0, CommonEventList.DT);
-		mySeq.setInstrument(0, 0, instrumentNumber, 0);
-		for (int i = 0; i < this.numOfNotes; i++)
-		{
-			OneNote tmpNote = (OneNote) eventList.get(i);
-			tmpNote = this.fixParameter(tmpNote);
-			if (tmpNote.getVelocity() > 0 && tmpNote.getPosition() >= 0)
-				mySeq.setNoteToTrack(0, 1, tmpNote.noteNumber(), tmpNote.noteVelocity(), tmpNote.positionInMotif(), tmpNote
-						.noteLength());
-
-		}
-		this.runningSeq = mySeq.playMIDISequenceWithSequencer();
-		this.playingState = true;
+		playAsMIDISequence(DefaultTempo);
 	}
 	
 	public void playAsMIDISequence(int tempo) throws MidiUnavailableException, InvalidMidiDataException
 	{
-		MIDISequence mySeq = new MIDISequence();
-		mySeq.setTempo(0, tempo);
-		mySeq.setInstrument(0, 0, instrumentNumber, 0);
-		if(scaleMode == DIATONIC_inC){
-			for(int i=0; i< numOfNotes; i++){
-				OneNote tmpNote = (OneNote) eventList.get(i);
-				tmpNote = fixParameter(tmpNote);
-				if(tmpNote.getVelocity() > 0 && tmpNote.getPosition() >= 0)
-					mySeq.setNoteToTrack(0, 0, fitMidiNoteNumber(convertChromaticToDiatonicInC(tmpNote.noteNumber())),
-							tmpNote.noteVelocity(), tmpNote.positionInMotif(), tmpNote.noteLength());
-			}
-		}
-		else{
-			for (int i = 0; i < numOfNotes; i++)
-			{
-				OneNote tmpNote = (OneNote) eventList.get(i);
-				tmpNote = fixParameter(tmpNote);
-				if (tmpNote.getVelocity() > 0 && tmpNote.getPosition() >= 0)
-					mySeq.setNoteToTrack(0, 0, tmpNote.noteNumber(), tmpNote.noteVelocity(), tmpNote.positionInMotif(), tmpNote
-							.noteLength());
-
-			}
-		}
+		MIDISequence mySeq = toMIDISequence(tempo);
 		this.runningSeq = mySeq.playMIDISequenceWithSequencer();
 		this.playingState = true;
+	}
+
+	/** The one MIDI conversion path shared by playback, export and headless tests. */
+	public MIDISequence toMIDISequence(int tempo) throws MidiUnavailableException {
+		MIDISequence sequence = new MIDISequence();
+		sequence.setTempo(0, tempo);
+		sequence.setInstrument(0, 0, instrumentNumber, 0);
+		for (int i=0;i<numOfNotes;i++) {
+			OneNote note=fixParameter(eventList.get(i));
+			if(note.getVelocity()>0 && note.getPosition()>=0) {
+				int pitch=pitchEncoding==PitchEncoding.MIDI_NOTE_NUMBER ? note.noteNumber() : convertChromaticToDiatonicInC(note.noteNumber());
+				sequence.setNoteToTrack(0,0,fitMidiNoteNumber(pitch),note.noteVelocity(),note.positionInMotif(),note.noteLength());
+			}
+		}
+		return sequence;
 	}
 	
 	public static int convertChromaticToDiatonicInC(int inputNoteNumber){
@@ -373,61 +363,14 @@ public class CommonEventList
 	
 	public boolean saveAsMIDISequence(String fileName)
 	{
-		boolean returnValue = false;
-		MIDISequence mySeq = new MIDISequence();
-		mySeq.setTempo(0, this.DefaultTempo);
-		try {
-			mySeq.setInstrument(0, 0, instrumentNumber, 0);
-		} catch (MidiUnavailableException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
-		for (int i = 0; i < this.numOfNotes; i++)
-		{
-			OneNote tmpNote = (OneNote) eventList.get(i);
-			tmpNote = this.fixParameter(tmpNote);
-			if (tmpNote.getVelocity() > 0 && tmpNote.getPosition() >= 0)
-				mySeq.setNoteToTrack(0, 1, tmpNote.noteNumber(), tmpNote.noteVelocity(), tmpNote.positionInMotif(), tmpNote
-						.noteLength());
-		}
-
-		try
-		{
-			mySeq.saveMIDISequenceToFile(fileName, 0);
-			returnValue = true;
-		} catch (Exception e)
-		{
-			System.err.println(e);
-			System.exit(1);
-		}
-		return returnValue;
+		return saveAsMIDISequence(fileName, DefaultTempo);
 	}
 
 	public boolean saveAsMIDISequence(String fileName, int tempo)
 	{
 		boolean returnValue = false;
-		MIDISequence mySeq = new MIDISequence();
-		mySeq.setTempo(0, tempo);
 		try {
-			mySeq.setInstrument(0, 0, instrumentNumber, 0);
-		} catch (MidiUnavailableException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		for (int i = 0; i < this.numOfNotes; i++)
-		{
-			OneNote tmpNote = (OneNote) eventList.get(i);
-			tmpNote = this.fixParameter(tmpNote);
-			if (tmpNote.getVelocity() > 0 && tmpNote.getPosition() >= 0)
-				mySeq.setNoteToTrack(0, 1, fitMidiNoteNumber(convertChromaticToDiatonicInC(tmpNote.noteNumber())), tmpNote.noteVelocity(), tmpNote.positionInMotif(), tmpNote
-						.noteLength());
-		}
-
-		try
-		{
+			MIDISequence mySeq=toMIDISequence(tempo);
 			mySeq.saveMIDISequenceToFile(fileName, 0);
 			returnValue = true;
 		} catch (Exception e)

@@ -21,6 +21,9 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import CACIE.eventlist.CommonEventList;
+import CACIE.eventlist.ScaleFilter;
+import CACIE.eventlist.ScaleType;
+import CACIE.genome.Motif_simpleTree_Individual;
 import CACIE.genome.OneNote;
 
 /** Eight evaluated individuals and their playback/scale parameters. */
@@ -46,17 +49,6 @@ public class BreedingPanel extends JPanel {
         @Override public String toString() { return label; }
     }
 
-    public enum Scale {
-        DIATONIC("Diatonic"), MAJOR("Major"),
-        NATURAL_MINOR("Natural minor"), HARMONIC_MINOR("Harmonic minor"),
-        MELODIC_MINOR("Melodic minor"), PENTATONIC("Pentatonic"),
-        CHROMATIC("Chromatic");
-
-        private final String label;
-        Scale(String label) { this.label = label; }
-        @Override public String toString() { return label; }
-    }
-
     private static final String[] TONICS = {
         "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"
     };
@@ -66,10 +58,14 @@ public class BreedingPanel extends JPanel {
     @SuppressWarnings("unchecked")
     private final JComboBox<String>[] tonicBoxes = new JComboBox[SLOT_COUNT];
     @SuppressWarnings("unchecked")
-    private final JComboBox<Scale>[] scaleBoxes = new JComboBox[SLOT_COUNT];
+    private final JComboBox<ScaleType>[] scaleBoxes = new JComboBox[SLOT_COUNT];
     private final JPanel[] individualCards = new JPanel[SLOT_COUNT];
     private final JLabel[] individualLabels = new JLabel[SLOT_COUNT];
     private final List<CommonEventList> eventLists = new ArrayList<CommonEventList>(SLOT_COUNT);
+    private final List<Motif_simpleTree_Individual> sourceIndividuals =
+        new ArrayList<Motif_simpleTree_Individual>(SLOT_COUNT);
+    private final List<Motif_simpleTree_Individual> playbackIndividuals =
+        new ArrayList<Motif_simpleTree_Individual>(SLOT_COUNT);
     private final JButton playButton = new JButton("Play sequence");
     private final JButton stopButton = new JButton("Stop");
 
@@ -78,14 +74,14 @@ public class BreedingPanel extends JPanel {
     private int playingIndex = -1;
     private int tempo = CommonEventList.DT;
 
-    public BreedingPanel(List<CommonEventList> evaluatedIndividuals) {
+    public BreedingPanel(List<Motif_simpleTree_Individual> individuals) {
         setLayout(new BorderLayout(0, 12));
         setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
         setBackground(new Color(239, 242, 246));
         setPreferredSize(new Dimension(1280, 360));
         add(createHeader(), BorderLayout.NORTH);
         add(createSlots(), BorderLayout.CENTER);
-        setEventLists(evaluatedIndividuals);
+        setIndividuals(individuals);
     }
 
     private JPanel createHeader() {
@@ -117,8 +113,12 @@ public class BreedingPanel extends JPanel {
             lengthBoxes[i] = new JComboBox<PlaybackLength>(PlaybackLength.values());
             lengthBoxes[i].setSelectedItem(PlaybackLength.FOUR_BEATS);
             tonicBoxes[i] = new JComboBox<String>(TONICS);
-            scaleBoxes[i] = new JComboBox<Scale>(Scale.values());
-            scaleBoxes[i].setSelectedItem(Scale.DIATONIC);
+            scaleBoxes[i] = new JComboBox<ScaleType>(ScaleType.values());
+            scaleBoxes[i].setSelectedItem(ScaleType.DIATONIC);
+            final int slot = i;
+            lengthBoxes[i].addActionListener(e -> rebuildSlot(slot));
+            tonicBoxes[i].addActionListener(e -> rebuildSlot(slot));
+            scaleBoxes[i].addActionListener(e -> rebuildSlot(slot));
             column.add(labeled("Length", lengthBoxes[i]));
             column.add(labeled("Tonic", tonicBoxes[i]));
             column.add(labeled("Scale", scaleBoxes[i]));
@@ -148,11 +148,18 @@ public class BreedingPanel extends JPanel {
         return panel;
     }
 
-    public final void setEventLists(List<CommonEventList> individuals) {
+    public final void setIndividuals(List<Motif_simpleTree_Individual> individuals) {
         stopPlayback();
+        sourceIndividuals.clear();
+        playbackIndividuals.clear();
         eventLists.clear();
         if (individuals != null) {
-            eventLists.addAll(individuals.subList(0, Math.min(SLOT_COUNT, individuals.size())));
+            sourceIndividuals.addAll(individuals.subList(0, Math.min(SLOT_COUNT, individuals.size())));
+            for (int i = 0; i < sourceIndividuals.size(); i++) {
+                playbackIndividuals.add(null);
+                eventLists.add(null);
+                rebuildSlot(i);
+            }
         }
         for (int i = 0; i < SLOT_COUNT; i++) {
             boolean occupied = i < eventLists.size() && eventLists.get(i) != null;
@@ -164,6 +171,21 @@ public class BreedingPanel extends JPanel {
                 : "Empty");
         }
         playButton.setEnabled(!eventLists.isEmpty());
+    }
+
+    private void rebuildSlot(int slot) {
+        if (slot < 0 || slot >= sourceIndividuals.size()) return;
+        double beats = getPlaybackTicks(slot) == Long.MAX_VALUE
+            ? Double.POSITIVE_INFINITY : getPlaybackTicks(slot) / 16.0;
+        int tonic = ScaleFilter.tonicFromName(getTonic(slot));
+        Motif_simpleTree_Individual decorated = sourceIndividuals.get(slot)
+            .createBreedingPlaybackClone(beats, tonic, getScale(slot));
+        CommonEventList eventList = decorated.convertToEventList();
+        if (slot < playbackIndividuals.size()) playbackIndividuals.set(slot, decorated);
+        if (slot < eventLists.size()) eventLists.set(slot, eventList);
+        if (slot < individualLabels.length && individualLabels[slot] != null)
+            individualLabels[slot].setText("<html><center>Individual " + (slot + 1)
+                + "<br>" + eventList.getNumOfNotes() + " notes</center></html>");
     }
 
     public void playSequence() {
@@ -180,8 +202,7 @@ public class BreedingPanel extends JPanel {
         }
         playingIndex = index;
         updateCardBorders();
-        long selectedTicks = getPlaybackTicks(index);
-        playingExcerpt = createExcerpt(eventLists.get(index), selectedTicks);
+        playingExcerpt = eventLists.get(index);
         try {
             playingExcerpt.setInstrumentNumber(eventLists.get(index).getInstrumentNumber());
             playingExcerpt.playAsMIDISequence(tempo);
@@ -189,7 +210,7 @@ public class BreedingPanel extends JPanel {
             ex.printStackTrace();
         }
 
-        long ticks = effectiveDuration(playingExcerpt, selectedTicks);
+        long ticks = effectiveDuration(playingExcerpt, Long.MAX_VALUE);
         int delay = (int) Math.max(100L, Math.min(Integer.MAX_VALUE,
             Math.round(ticks * 60000.0 / (tempo * TICKS_PER_QUARTER))));
         sequenceTimer = new Timer(delay, e -> {
@@ -199,21 +220,6 @@ public class BreedingPanel extends JPanel {
         });
         sequenceTimer.setRepeats(false);
         sequenceTimer.start();
-    }
-
-    private CommonEventList createExcerpt(CommonEventList source, long limit) {
-        CommonEventList result = new CommonEventList(0);
-        for (int i = 0; i < source.getNumOfNotes(); i++) {
-            OneNote note = (OneNote) source.get(i);
-            if (note.getPosition() >= limit) continue;
-            long available = limit == Long.MAX_VALUE ? note.getDuration() : limit - note.getPosition();
-            int duration = (int) Math.min(note.getDuration(), available);
-            if (duration > 0) {
-                result.add(new OneNote(note.getNoteNumber(), note.getVelocity(),
-                    note.getPosition(), duration));
-            }
-        }
-        return result;
     }
 
     private long effectiveDuration(CommonEventList list, long selectedTicks) {
@@ -257,8 +263,11 @@ public class BreedingPanel extends JPanel {
         return ((PlaybackLength) lengthBoxes[slot].getSelectedItem()).getTicks();
     }
     public String getTonic(int slot) { return (String) tonicBoxes[slot].getSelectedItem(); }
-    public Scale getScale(int slot) { return (Scale) scaleBoxes[slot].getSelectedItem(); }
+    public ScaleType getScale(int slot) { return (ScaleType) scaleBoxes[slot].getSelectedItem(); }
     public List<CommonEventList> getEventLists() { return Collections.unmodifiableList(eventLists); }
+    public List<Motif_simpleTree_Individual> getSourceIndividuals() {
+        return Collections.unmodifiableList(sourceIndividuals);
+    }
 
     public void setTempo(int tempo) {
         if (tempo <= 0) throw new IllegalArgumentException("Tempo must be positive.");

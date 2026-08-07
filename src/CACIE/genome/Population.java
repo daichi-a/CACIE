@@ -5,11 +5,13 @@ package CACIE.genome;
 import java.util.ArrayList;
 import CACIE.eventlist.CommonEventList;
 import CACIE.eventlist.PopulationOfEventList;
+import CACIE.eventlist.PlaybackSettings;
 
 public class Population extends Abstract_Population {
 	String genomeType;
 
 	Abstract_Population population;
+	private PlaybackSettings playbackSettings=PlaybackSettings.DEFAULT;
 		
 	public Population(int populationSize, String gType, int treeMode,
 			ArrayList<Notes> notes, ArrayList<String> oprList, ArrayList<String> configList) {
@@ -85,8 +87,13 @@ public class Population extends Abstract_Population {
 	}
 
 	public CommonEventList convertToEventList(int popID, int index) {
-		return population.convertToEventList(popID, index);
+		if(population instanceof Motif_simpleTree_Population)
+			return ((Motif_simpleTree_Population)population).convertToPlaybackEventList(popID,index,playbackSettings);
+		return population.convertToEventList(popID,index);
 	}
+
+	public void setPlaybackSettings(PlaybackSettings settings){this.playbackSettings=settings;}
+	public PlaybackSettings getPlaybackSettings(){return playbackSettings;}
 
 	public String getGenomeString(int popID, int index) {
 		return population.getGenomeString(popID, index);
