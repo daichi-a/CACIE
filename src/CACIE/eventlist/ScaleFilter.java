@@ -3,19 +3,39 @@ package CACIE.eventlist;
 import CACIE.genome.Notes;
 import CACIE.genome.OneNote;
 
-/** Converts the scale-degree pitches used by GP into MIDI note numbers. */
+/** Snaps chromatic MIDI pitches to the nearest note in a scale or chord. */
 public final class ScaleFilter {
     private ScaleFilter() {}
 
     public static Notes apply(Notes source, ScaleType scale, int tonicPitchClass) {
-        Notes result = new Notes();
+        Notes snapped = new Notes();
         for (int i = 0; i < source.getNumOfNotes(); i++) {
             OneNote note = source.getNote(i);
-            int pitch = convertScaleDegreeToMidi(note.getNoteNumber(), scale, tonicPitchClass);
-            result.addNote(new OneNote(pitch, note.getVelocity(), note.getPosition(), note.getDuration()));
+            int pitch = snapToNearestPitch(note.getNoteNumber(), scale, tonicPitchClass);
+            snapped.addNote(new OneNote(pitch, note.getVelocity(), note.getPosition(), note.getDuration()));
         }
-        result.fitParameters();
-        return result;
+        snapped.fitParameters();
+        return DeterministicRegisterNormalizer.normalize(snapped);
+    }
+
+    public static int snapToNearestChordPitch(int midiPitch, ScaleType chord, int tonicPitchClass) {
+        if (!chord.isChord()) throw new IllegalArgumentException("Not a chord: " + chord);
+        return snapToNearestPitch(midiPitch, chord, tonicPitchClass);
+    }
+
+    public static int snapToNearestPitch(int midiPitch, ScaleType collection, int tonicPitchClass) {
+        int best = 0, bestDistance = Integer.MAX_VALUE;
+        for (int candidate = 0; candidate <= 127; candidate++) {
+            int pc = Math.floorMod(candidate - tonicPitchClass, 12);
+            boolean allowed = false;
+            for (int interval : collection.getIntervals()) if (pc == interval) { allowed = true; break; }
+            if (!allowed) continue;
+            int distance = Math.abs(candidate - midiPitch);
+            if (distance < bestDistance || (distance == bestDistance && candidate < best)) {
+                best = candidate; bestDistance = distance;
+            }
+        }
+        return best;
     }
 
     public static int convertScaleDegreeToMidi(int degree, ScaleType scale, int tonicPitchClass) {
@@ -28,11 +48,11 @@ public final class ScaleFilter {
 
     /** Compatibility entry point for the old configuration-based caller. */
     public static int doFiltering(int inputNoteNumber, String scaleName, String key) {
-        return convertScaleDegreeToMidi(inputNoteNumber, ScaleType.DIATONIC, tonicFromName(key));
+        return snapToNearestPitch(inputNoteNumber, ScaleType.DIATONIC, tonicFromName(key));
     }
 
     public static int convertToDiatonicScale(int inputNoteNumber, String key) {
-        return convertScaleDegreeToMidi(inputNoteNumber, ScaleType.DIATONIC, tonicFromName(key));
+        return snapToNearestPitch(inputNoteNumber, ScaleType.DIATONIC, tonicFromName(key));
     }
 
     public static int tonicFromName(String tonic) {

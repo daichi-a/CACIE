@@ -14,6 +14,7 @@ import javax.sound.midi.Sequencer;
 import CACIE.genome.Notes;
 import CACIE.genome.OneNote;
 import CACIE.midi.MIDISequence;
+import CACIE.midi.DrumPattern;
 
 public class CommonEventList
 {
@@ -332,6 +333,14 @@ public class CommonEventList
 			}
 		}
 		return sequence;
+	}
+
+	public MIDISequence toMIDISequenceWithDrums(int tempo,DrumPattern pattern,long durationTicks) throws MidiUnavailableException {
+		MIDISequence sequence=toMIDISequence(tempo);pattern.addTo(sequence,durationTicks);return sequence;
+	}
+
+	public void playAsMIDISequenceWithDrums(int tempo,DrumPattern pattern,long durationTicks) throws MidiUnavailableException,InvalidMidiDataException {
+		MIDISequence sequence=toMIDISequenceWithDrums(tempo,pattern,durationTicks);runningSeq=sequence.playMIDISequenceWithSequencer();playingState=true;
 	}
 	
 	public static int convertChromaticToDiatonicInC(int inputNoteNumber){
